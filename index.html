@@ -53,6 +53,19 @@
 
     .statusgrid{display:grid;gap:8px;margin-top:12px}.statusrow{display:grid;grid-template-columns:120px 150px 1fr auto;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;font-size:12px}.statusrow .date{font-weight:800}.tag{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:700}.tag.ok{background:#e8f2e7;color:#496449}.tag.warn{background:#f7edda;color:#7b6330}.tag.bad{background:#f6e2e2;color:#875050}.tag.ordinary{background:#e8f2e7;color:#496449}.tag.memorial{background:#f6edf7;color:#725578}.tag.feast{background:#f8eddf;color:#835f32}.tag.sunday{background:#e8eef8;color:#48617d}.tag.solemnity{background:#f6e4e4;color:#8a5050}.codehelp{padding:12px 14px;border-radius:12px;background:#f8f5ef;border:1px solid var(--line);font-size:12px;line-height:1.65}.previewbox{min-height:420px}.tinyarea{min-height:72px}.twoCol{display:grid;grid-template-columns:1fr 1fr;gap:10px}details{margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#faf8f4}summary{cursor:pointer;font-size:12px;font-weight:800}.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.legend span{font-size:11px;color:var(--muted)}
     .categorybar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.catbtn{background:#fff;border:1px solid var(--line);color:#5d554d;padding:9px 12px}.catbtn.active{background:var(--deep);color:#fff;border-color:var(--deep)}.catbtn b{margin-left:5px}.manager-actions{display:flex;gap:8px;flex-wrap:wrap;padding:12px;border:1px solid var(--line);background:#faf8f4;border-radius:14px;margin-bottom:12px}.resultlist{display:grid;gap:8px}.resultitem{display:grid;grid-template-columns:30px 95px 92px minmax(260px,1fr) auto;gap:10px;align-items:center;padding:11px 12px;background:#fff;border:1px solid var(--line);border-radius:13px}.resultitem:hover{border-color:#cdbba6}.resultitem .rdate{font-weight:800;font-size:12px}.resultitem .rtitle{font-size:12px;line-height:1.4}.resultitem .rmeta{font-size:10px;color:var(--muted);margin-top:3px}.resultitem .ractions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}.resultitem .ractions button{padding:7px 9px;font-size:11px}.checkone{width:17px;height:17px;accent-color:#5b5047}.selectedsummary{font-size:12px;color:var(--muted);margin:8px 0}.category-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0}.catstat{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px}.catstat span{font-size:10px;color:var(--muted)}.catstat b{display:block;font-size:19px;margin-top:3px}
+    .source-status{margin-top:10px;padding:10px 12px;border-radius:12px;background:#faf7f2;border:1px solid var(--line);font-size:12px;line-height:1.6}
+    .category-results{display:grid;gap:16px;margin-top:16px}
+    .category-panel{border:1px solid var(--line);border-radius:18px;background:#fcfaf6;overflow:hidden}
+    .category-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;background:#f4efe7;border-bottom:1px solid var(--line)}
+    .category-head h3{margin:0;font-size:16px}.category-head .count{font-size:12px;color:var(--muted)}
+    .day-code-list{display:grid;gap:10px;padding:12px}
+    .day-code-card{border:1px solid var(--line);border-radius:14px;background:#fff;padding:12px}
+    .day-code-top{display:grid;grid-template-columns:auto auto minmax(220px,1fr) auto;gap:10px;align-items:center}
+    .day-code-title{min-width:0}.day-code-title b{font-size:13px}.day-code-title div{font-size:11px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .day-code-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.day-code-actions button{padding:7px 10px;font-size:11px}
+    .day-code-card details{margin-top:10px}.day-code-card summary{cursor:pointer;font-size:12px;font-weight:700;color:#65594d}
+    .day-code-pre{margin:9px 0 0;max-height:360px;overflow:auto;font-size:11px;line-height:1.5}
+    .empty-cat{padding:16px;color:var(--muted);font-size:12px}
     footer{padding:26px 0 8px;color:var(--muted);font-size:11px;text-align:center}
     @media (max-width:980px){.grid,.grid3,.stepflow,.stats,.tabs,.row,.row3,.twoCol,.statusrow,.resultitem,.category-stats{grid-template-columns:1fr}.wrap{padding:16px}header{align-items:flex-start;flex-direction:column}}
   </style>
@@ -190,14 +203,16 @@
         <label>Word 원문 전문</label>
         <textarea id="rawText" style="min-height:300px" placeholder="Word에서 읽은 한 달치 원문이 여기에 표시됩니다. 직접 붙여넣어도 됩니다."></textarea>
         <div class="btns"><button class="soft" onclick="copyEl('rawText')">원문 복사</button><button class="green" onclick="downloadText('매일미사_원문.txt',$('rawText').value)">원문 TXT</button></div>
+        <div id="sourceReadStatus" class="source-status">아직 Word 원문을 읽지 않았습니다.</div>
       </div>
 
       <div class="card">
         <h2>5-2. 발행용 대제목 · 소제목</h2>
         <div class="hint">CBCK 원문의 전례명과 실제 발행 제목이 다를 수 있으므로, <b>최종 HTML 제목은 이 목록을 우선</b>합니다. 앞 단계 전례력으로 자동 작성한 뒤 필요하면 직접 고치세요.</div>
-        <div class="btns"><button class="primary" onclick="fillPublishTitlesFromCalendar()">앞 단계 전례력으로 자동 채우기</button><button class="soft" onclick="copyEl('publishTitles')">복사</button></div>
+        <div class="btns"><button class="primary" onclick="fillPublishTitlesFromCalendar()">앞 단계 전례력으로 자동 채우기</button><button class="soft" onclick="inspectPublishTitles()">제목 적용 확인</button><button class="soft" onclick="copyEl('publishTitles')">복사</button></div>
         <label>대제목 · 소제목 목록</label>
         <textarea id="publishTitles" style="min-height:300px" placeholder="예)\n2026년 9월 20일 매일미사 ... 대축일 오늘의 묵상\n2026년 9월 20일 매일미사 ... 대축일 제1독서\n2026년 9월 20일 매일미사 ... 대축일 화답송\n2026년 9월 20일 매일미사 ... 대축일 제2독서\n2026년 9월 20일 매일미사 ... 대축일 복음\n2026년 9월 20일 매일미사 ... 대축일 오늘의 묵상"></textarea>
+        <div id="publishTitleStatus" class="source-status">아직 발행용 제목을 확인하지 않았습니다.</div>
         <div class="legend"><span>연중 → 제1독서·복음·묵상</span><span>기념/축일 → 초대문 + 제1독서·복음·묵상</span><span>주일/대축일 → 초대문 + 제1독서·화답송·제2독서·복음·묵상</span></div>
       </div>
     </div>
@@ -231,9 +246,9 @@
     </div>
 
     <div class="card" style="margin-top:18px">
-      <h2>5-5. 날짜별 원문 분석 · 5개 카테고리 자동 분류</h2>
-      <div class="hint">분석 결과를 <b>연중 / 기념일 / 축일 / 주일 / 대축일</b>로 각각 분리합니다. 기념일·축일은 같은 HTML 규칙을 쓰고, 주일·대축일도 같은 HTML 규칙을 쓰지만 결과 관리와 다운로드에서는 서로 따로 보입니다.</div>
-      <div class="btns"><button class="primary" onclick="analyzeMassSource()">① 날짜별 원문 분석</button><button class="purple" onclick="generateAllPosts()">② 전체 HTML 생성</button><button class="green" onclick="downloadPostsZip()">③ 전체 TXT ZIP</button><button class="soft" onclick="downloadCategoryFoldersZip()">④ 5분류 폴더 ZIP</button></div>
+      <h2>5-5. 날짜별 HTML 완성코드 생성 · 5개 카테고리</h2>
+      <div class="hint"><b>여기가 실제 결과가 만들어지는 곳입니다.</b> 5-1의 월간 Word 원문과 5-2의 발행 제목을 날짜별로 결합한 뒤, <b>연중 / 기념일 / 축일 / 주일 / 대축일</b>로 나누고 각 날짜의 티스토리용 완성 HTML을 즉시 생성합니다. 각 날짜 카드에서 바로 HTML을 복사하거나 TXT로 받을 수 있습니다.</div>
+      <div class="btns"><button class="primary" onclick="buildAllDailyHtml()">날짜별 HTML 완성코드 생성</button><button class="green" onclick="downloadPostsZip()">전체 TXT ZIP</button><button class="soft" onclick="downloadCategoryFoldersZip()">5분류 폴더 ZIP</button></div>
       <div class="category-stats">
         <div class="catstat"><span>연중</span><b id="countOrdinary">0</b></div>
         <div class="catstat"><span>기념일</span><b id="countMemorial">0</b></div>
@@ -241,7 +256,9 @@
         <div class="catstat"><span>주일</span><b id="countSunday">0</b></div>
         <div class="catstat"><span>대축일</span><b id="countSolemnity">0</b></div>
       </div>
-      <div id="analysisResult" class="statusgrid"><div class="hint">Word 원문과 제목 목록을 준비한 뒤 [날짜별 원문 분석]을 누르세요.</div></div>
+      <div id="analysisSummary" class="source-status">5-1 Word 원문과 5-2 제목 목록을 준비한 뒤 [날짜별 HTML 완성코드 생성]을 누르세요.</div>
+      <div id="categoryResults" class="category-results"></div>
+      <div id="analysisResult" style="display:none"></div>
     </div>
 
     <div class="card" style="margin-top:18px">
@@ -448,7 +465,11 @@ async function readDocx(e){
   try{
     const r=await mammoth.extractRawText({arrayBuffer:buf});
     $('rawText').value=r.value;
-  }catch(err){alert('DOCX 읽기에 실패했습니다: '+err.message)}
+    inspectLoadedSource();
+  }catch(err){
+    if($('sourceReadStatus')) $('sourceReadStatus').innerText='DOCX 읽기 실패: '+err.message;
+    alert('DOCX 읽기에 실패했습니다: '+err.message)
+  }
 }
 
 function pad2(n){return String(n).padStart(2,'0')}
@@ -462,6 +483,7 @@ function fillPublishTitlesFromCalendar(){
   const rows=parseCalendar($('liturgicalClean').value || $('calendarRaw').value || $('seoCalendar').value);
   if(!rows.length){alert('먼저 1번에서 전례력을 입력하고 [전례력 문구 다듬기]를 눌러주세요.');return;}
   $('publishTitles').value=titleLines(y,m,rows);
+  inspectLoadedSource();
 }
 
 function parsePublishTitles(text){
@@ -480,33 +502,73 @@ function parsePublishTitles(text){
   return map;
 }
 
-function splitMonthlySource(text){
+function inspectPublishTitles(){
+  const map=parsePublishTitles($('publishTitles').value);
+  const days=Object.values(map).sort((a,b)=>a.key.localeCompare(b.key));
+  const counts={'연중':0,'기념일':0,'축일':0,'주일':0,'대축일':0};
+  days.forEach(meta=>{
+    const type=determinePostType(meta.base,meta.roles,{second:[]});
+    if(counts[type]!==undefined) counts[type]++;
+  });
+  if($('publishTitleStatus')) $('publishTitleStatus').innerHTML=`<b>제목 ${days.length}일 인식</b> · 연중 ${counts['연중']} · 기념일 ${counts['기념일']} · 축일 ${counts['축일']} · 주일 ${counts['주일']} · 대축일 ${counts['대축일']}${days.length?`<br><span class="mini">${days.map(d=>d.key).join(', ')}</span>`:''}`;
+  inspectLoadedSource();
+}
+
+function splitMonthlySource(text,titleMap={}){
   const src=String(text||'').replace(/\r/g,'');
   const blocks=[];
+  const validKeys=new Set(Object.keys(titleMap||{}));
+
   const marker=/===DATE:(\d{8})===([\s\S]*?)(?====ENDDATE===|===DATE:|$)/g;
   let mm;
   while((mm=marker.exec(src))){
     const d=mm[1];
-    blocks.push({key:`${d.slice(0,4)}-${d.slice(4,6)}-${d.slice(6,8)}`,text:mm[2].trim()});
+    const key=`${d.slice(0,4)}-${d.slice(4,6)}-${d.slice(6,8)}`;
+    if(!validKeys.size || validKeys.has(key)) blocks.push({key,text:mm[2].trim(),source:'marker'});
   }
-  if(blocks.length) return blocks;
+  if(blocks.length) return dedupeBlocks(blocks);
 
   const lines=src.split('\n');
   let current=null;
   const byKey={};
   for(const raw of lines){
     const line=raw.trim();
+    if(!line){ if(current) byKey[current].push(''); continue; }
+    let key=null;
     let m=line.match(/^(\d{4})(\d{2})(\d{2})$/);
-    if(m){current=`${m[1]}-${m[2]}-${m[3]}`; if(!byKey[current]) byKey[current]=[]; continue;}
-    m=line.match(/(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일/);
-    if(m){
-      const key=makeDateKey(+m[1],+m[2],+m[3]);
-      if(!current || current!==key) current=key;
-      if(!byKey[current]) byKey[current]=[];
+    if(m) key=`${m[1]}-${m[2]}-${m[3]}`;
+    if(!key){
+      m=line.match(/^(\d{4})년\s*0?(\d{1,2})월\s*0?(\d{1,2})일(?:\s+(?:월|화|수|목|금|토|일)요일)?\s*$/);
+      if(m) key=makeDateKey(+m[1],+m[2],+m[3]);
     }
-    if(current && line) byKey[current].push(line);
+    if(key && validKeys.size && !validKeys.has(key)) key=null;
+    if(key){
+      current=key;
+      if(!byKey[current]) byKey[current]=[];
+      continue;
+    }
+    if(current) byKey[current].push(raw);
   }
-  return Object.keys(byKey).sort().map(key=>({key,text:byKey[key].join('\n')}));
+  const result=Object.keys(byKey).sort().map(key=>({key,text:byKey[key].join('\n').trim(),source:'date-heading'}));
+  return dedupeBlocks(result);
+}
+
+function dedupeBlocks(blocks){
+  const map=new Map();
+  for(const b of blocks){
+    if(!map.has(b.key)) map.set(b.key,{...b});
+    else if((b.text||'').length>(map.get(b.key).text||'').length) map.set(b.key,{...b});
+  }
+  return [...map.values()].sort((a,b)=>a.key.localeCompare(b.key));
+}
+
+function inspectLoadedSource(){
+  const titleMap=parsePublishTitles($('publishTitles').value);
+  const blocks=splitMonthlySource($('rawText').value,titleMap);
+  const titleCount=Object.keys(titleMap).length;
+  const keys=blocks.map(b=>b.key);
+  if(!$('sourceReadStatus')) return;
+  $('sourceReadStatus').innerHTML=`<b>Word 읽기 완료</b> · 원문 ${$('rawText').value.length.toLocaleString()}자 · 날짜 경계 <b>${blocks.length}일</b>${titleCount?` · 5-2 제목 ${titleCount}일`:''}${keys.length?`<br><span class="mini">인식 날짜: ${keys.join(', ')}</span>`:''}`;
 }
 
 function headingRole(line, hasReading){
@@ -515,7 +577,7 @@ function headingRole(line, hasReading){
   if(/입당송|본기도|예물\s*기도|영성체송|영성체\s*후\s*묵상|영성체\s*후\s*기도/.test(s)) return 'ignore';
   if(/오늘\s*전례|초대문\s*:/.test(s)) return 'intro';
   if(/제1독서\s*$/.test(s)) return 'first';
-  if(/화답송\s*$/.test(s)) return 'psalm';
+  if(/^화답송(?:\s|$)/.test(s)) return 'psalm';
   if(/제2독서\s*$/.test(s)) return 'second';
   if(/(?:^|\s)복음\s*$/.test(s) && !/복음\s*환호송/.test(s)) return 'gospel';
   if(/오늘의\s*묵상\s*$/.test(s)) return hasReading?'reflection':'pageTitle';
@@ -527,12 +589,21 @@ function segmentMassBlock(text){
   let current='pre', hasReading=false;
   const lines=String(text||'').replace(/\r/g,'').split('\n').map(x=>x.trim()).filter(Boolean);
   for(const line of lines){
+    if(/^\d{4}년\s*0?\d{1,2}월\s*0?\d{1,2}일(?:\s+\S+요일)?\s*$/.test(line)) continue;
+    if(/^\[[^\]]+\]\s*/.test(line)) continue;
+
     const role=headingRole(line,hasReading);
     if(role){
       if(role==='first'){hasReading=true;current='first';continue}
       if(role==='pageTitle'){current='pre';continue}
       if(role==='intro'){current='intro';continue}
       if(role==='ignore'){current='ignore';continue}
+      if(role==='psalm'){
+        current='psalm';
+        const payload=line.replace(/^화답송\s*/,'').trim();
+        if(payload) out.psalm.push(payload);
+        continue;
+      }
       current=role; continue;
     }
     if(/^===/.test(line) || /^\d{8}$/.test(line)) continue;
@@ -588,16 +659,25 @@ function categoryClass(type){
 
 function analyzeMassSource(){
   const titleMap=parsePublishTitles($('publishTitles').value);
-  const blocks=splitMonthlySource($('rawText').value);
-  if(!blocks.length){alert('날짜별 원문을 찾지 못했습니다. 새 extract_missa.py로 다시 만들거나, Word 원문 안에 날짜 제목이 있는지 확인해주세요.');return;}
-  massDays=blocks.map(b=>{
+  const blocks=splitMonthlySource($('rawText').value,titleMap);
+  const blockMap=new Map(blocks.map(b=>[b.key,b]));
+  const titleKeys=Object.keys(titleMap).sort();
+
+  if(!blocks.length && !titleKeys.length){
+    alert('날짜별 원문과 발행 제목을 찾지 못했습니다. 5-1 Word 원문과 5-2 제목 목록을 확인해주세요.');
+    return false;
+  }
+
+  const allKeys=titleKeys.length ? titleKeys : [...blockMap.keys()].sort();
+  massDays=allKeys.map(key=>{
+    const b=blockMap.get(key) || {key,text:'',source:'missing'};
     const seg=segmentMassBlock(b.text);
-    const meta=titleMap[b.key]||null;
-    const base=meta?.base || calendarNameForKey(b.key);
+    const meta=titleMap[key]||null;
+    const base=meta?.base || calendarNameForKey(key);
     const titleRoles=meta?.roles || new Set();
     const labels=meta?.labels || {};
     const type=determinePostType(base,titleRoles,seg);
-    const day={key:b.key,base,titleRoles,labels,type,seg,raw:b.text};
+    const day={key,base,titleRoles,labels,type,seg,raw:b.text,sourceFound:!!b.text,sourceMethod:b.source};
     day.expected=expectedRolesFor(day);
     day.missing=day.expected.filter(r=>!seg[r]?.length);
     day.introMissing=ruleGroupFor(day)!=='연중' && !seg.intro.length;
@@ -607,19 +687,27 @@ function analyzeMassSource(){
   const sel=$('postSelect');
   sel.innerHTML='<option value="">날짜를 선택하세요.</option>'+massDays.map(d=>`<option value="${d.key}">${d.key} · ${escapeHtml(d.type)}</option>`).join('');
 
-  $('analysisResult').innerHTML=massDays.map(d=>{
-    const missing=d.missing.map(r=>MASS_ROLE_LABELS[r]).join(', ');
-    const intro=d.introMissing?' · 초대문 없음':'';
-    const ok=!d.missing.length&&!d.introMissing;
-    return `<div class="statusrow"><div class="date">${d.key}</div><div><span class="tag ${categoryClass(d.type)}">${escapeHtml(d.type)}</span></div><div>${ok?'필수 원문 인식 완료':`확인 필요: ${escapeHtml(missing||'')}${escapeHtml(intro)}`}</div><div><span class="tag ${ok?'ok':'warn'}">${ok?'OK':'CHECK'}</span></div></div>`;
-  }).join('');
-
   massPosts=[];
   resultCategory='전체';
   selectedPostKeys.clear();
   updateCategoryCounts();
-  renderResultManager();
+  inspectLoadedSource();
   if(massDays[0]){sel.value=massDays[0].key;showSelectedPost()}
+  return true;
+}
+
+function buildAllDailyHtml(){
+  const ok=analyzeMassSource();
+  if(!ok || !massDays.length) return;
+  massPosts=massDays.map(day=>({day,html:generatePost(day),missingImages:missingImageRoles(day)}));
+  updateCategoryCounts();
+  renderCategoryResults();
+  renderResultManager();
+
+  const sourceFound=massDays.filter(d=>d.sourceFound).length;
+  const ready=massPosts.filter(p=>!p.day.missing.length&&!p.day.introMissing).length;
+  const titleDays=Object.keys(parsePublishTitles($('publishTitles').value)).length;
+  if($('analysisSummary')) $('analysisSummary').innerHTML=`<b>${massPosts.length}일 HTML 생성 완료</b> · Word 날짜 연결 ${sourceFound}/${massDays.length}일 · 제목 적용 ${titleDays||0}일 · 필수 원문 인식 ${ready}/${massDays.length}일<br><span class="mini">각 날짜 카드의 [HTML 복사] 버튼을 누르면 그 날짜의 완성코드가 바로 복사됩니다.</span>`;
 }
 
 function roleFromHeading(title,level){
@@ -727,12 +815,17 @@ function renderReading(lines,kind){
   let srcIdx=arr.findIndex(x=>/^[▥✠]/.test(x));
   let html=[];
   if(hiIdx>=0){html.push(`<p style="text-align: justify;" data-ke-size="size16"><span style="color: #fb85a3;" class="gmart"><b>${escapeHtml(cleanAngleHighlight(arr[hiIdx]))}</b></span></p>`)}
+  let bodyStart=srcIdx>=0?srcIdx+1:Math.max(0,hiIdx+1);
   if(srcIdx>=0){
     const sr=splitSourceLine(arr[srcIdx]);
-    html.push(`<p class="bon" style="text-align: justify;" data-ke-size="size16"><span style="color: #666666;" class="bon"><b>${escapeHtml(sr.source)}${sr.ref?`<span style="font-family: 'Noto Sans Demilight', 'Noto Sans KR';"> ${escapeHtml(sr.ref)}</span>`:''}</b></span></p>`);
+    let ref=sr.ref;
+    if(!ref && arr[srcIdx+1] && /^[0-9][0-9,\.\-―–ㄱ-ㅎ\s]*$/.test(arr[srcIdx+1])){
+      ref=arr[srcIdx+1].trim();
+      bodyStart=srcIdx+2;
+    }
+    html.push(`<p class="bon" style="text-align: justify;" data-ke-size="size16"><span style="color: #666666;" class="bon"><b>${escapeHtml(sr.source)}${ref?`<span style="font-family: 'Noto Sans Demilight', 'Noto Sans KR';"> ${escapeHtml(ref)}</span>`:''}</b></span></p>`);
   }
-  const start=srcIdx>=0?srcIdx+1:Math.max(0,hiIdx+1);
-  const body=arr.slice(start).filter((_,i)=>start+i!==hiIdx);
+  const body=arr.slice(bodyStart).filter((_,i)=>bodyStart+i!==hiIdx);
   for(const raw of body){
     if(raw.startsWith('주님의 말씀입니다.') || raw.startsWith('◎ 하느님') || raw.startsWith('◎ 그리스도님')) continue;
     html.push(...verseParagraphs(raw));
@@ -812,28 +905,14 @@ function missingImageRoles(day){
 }
 
 function generateAllPosts(){
-  if(!massDays.length) analyzeMassSource();
-  if(!massDays.length) return;
-  massPosts=massDays.map(day=>({day,html:generatePost(day),missingImages:missingImageRoles(day)}));
-  $('analysisResult').innerHTML=massPosts.map(p=>{
-    const d=p.day;
-    const contentIssue=d.missing.length || d.introMissing;
-    const imgIssue=p.missingImages.length;
-    const msgs=[];
-    if(d.missing.length) msgs.push('원문: '+d.missing.map(r=>MASS_ROLE_LABELS[r]).join(', '));
-    if(d.introMissing) msgs.push('초대문');
-    if(imgIssue) msgs.push('이미지: '+p.missingImages.map(r=>MASS_ROLE_LABELS[r]).join(', '));
-    const ok=!contentIssue&&!imgIssue;
-    return `<div class="statusrow"><div class="date">${d.key}</div><div><span class="tag ${categoryClass(d.type)}">${escapeHtml(d.type)}</span></div><div>${ok?'HTML 생성 준비 완료':`확인 필요 · ${escapeHtml(msgs.join(' / '))}`}</div><div><span class="tag ${ok?'ok':'warn'}">${ok?'READY':'CHECK'}</span></div></div>`;
-  }).join('');
-  updateCategoryCounts();
-  renderResultManager();
-  const sel=$('postSelect'); if(sel.value) showSelectedPost(); else if(massPosts[0]){sel.value=massPosts[0].day.key;showSelectedPost()}
+  buildAllDailyHtml();
 }
 
 function postsReady(){
-  if(!massDays.length) analyzeMassSource();
-  if(!massDays.length) return [];
+  if(!massDays.length){
+    const ok=analyzeMassSource();
+    if(!ok) return [];
+  }
   if(!massPosts.length) massPosts=massDays.map(day=>({day,html:generatePost(day),missingImages:missingImageRoles(day)}));
   return massPosts;
 }
@@ -855,6 +934,62 @@ function updateCategoryCounts(){
   };
   Object.entries(ids).forEach(([k,arr])=>arr.forEach(id=>{if($(id)) $(id).innerText=c[k]}));
   if($('filterCountAll')) $('filterCountAll').innerText=massDays.length;
+}
+
+function categoryPosts(category){
+  return postsReady().filter(p=>p.day.type===category);
+}
+
+function renderCategoryResults(){
+  if(!$('categoryResults')) return;
+  const categories=['연중','기념일','축일','주일','대축일'];
+  $('categoryResults').innerHTML=categories.map(category=>{
+    const posts=categoryPosts(category);
+    const cards=posts.length?posts.map(p=>{
+      const d=p.day;
+      const issues=[];
+      if(!d.sourceFound) issues.push('Word 원문 날짜 연결 안 됨');
+      if(d.missing.length) issues.push('누락: '+d.missing.map(r=>MASS_ROLE_LABELS[r]).join(', '));
+      if(d.introMissing) issues.push('초대문 확인');
+      const status=issues.length?issues.join(' · '):'완성코드 생성됨';
+      const shortTitle=d.base.replace(/^\d{4}년\s*\d{1,2}월\s*\d{1,2}일\s*매일미사\s*/, '');
+      return `<div class="day-code-card">
+        <div class="day-code-top">
+          <div class="rdate">${d.key.slice(5)}</div>
+          <span class="tag ${categoryClass(d.type)}">${escapeHtml(d.type)}</span>
+          <div class="day-code-title"><b>${escapeHtml(shortTitle)}</b><div>${escapeHtml(status)}</div></div>
+          <div class="day-code-actions">
+            <button class="primary" onclick="copyPostByKey('${d.key}')">HTML 복사</button>
+            <button class="green" onclick="downloadPostByKey('${d.key}')">TXT</button>
+            <button class="soft" onclick="openPost('${d.key}')">상세보기</button>
+          </div>
+        </div>
+        <details>
+          <summary>이 날짜의 완성 HTML 코드 펼치기</summary>
+          <pre class="day-code-pre">${escapeHtml(p.html)}</pre>
+        </details>
+      </div>`;
+    }).join(''):`<div class="empty-cat">해당 카테고리 날짜가 없습니다.</div>`;
+    return `<section class="category-panel">
+      <div class="category-head">
+        <div><h3>${category}</h3><div class="count">${posts.length}일</div></div>
+        <div class="day-code-actions"><button class="soft" onclick="copyCategoryByName('${category}')">${category} 전체 복사</button><button class="purple" onclick="downloadCategoryByName('${category}')">${category} ZIP</button></div>
+      </div>
+      <div class="day-code-list">${cards}</div>
+    </section>`;
+  }).join('');
+}
+
+function copyCategoryByName(category){
+  const posts=categoryPosts(category);
+  if(!posts.length){alert(category+' 결과가 없습니다.');return;}
+  navigator.clipboard.writeText(posts.map(p=>`<!-- ${p.day.key} · ${p.day.type} -->\n${p.html}`).join('\n\n'));
+}
+
+async function downloadCategoryByName(category){
+  const posts=categoryPosts(category);
+  if(!posts.length){alert(category+' 결과가 없습니다.');return;}
+  await zipPosts(posts,`말씀과함께_${category}_${$('year').value}년_${$('month').value}월.zip`);
 }
 
 function visibleResultPosts(){
