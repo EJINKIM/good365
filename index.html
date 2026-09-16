@@ -51,9 +51,10 @@
     .drop{border:1.5px dashed #cbbca9;border-radius:16px;padding:18px;text-align:center;background:#fbf8f3}
     .mini{font-size:11px;color:var(--muted)}
 
-    .statusgrid{display:grid;gap:8px;margin-top:12px}.statusrow{display:grid;grid-template-columns:120px 150px 1fr auto;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;font-size:12px}.statusrow .date{font-weight:800}.tag{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:700}.tag.ok{background:#e8f2e7;color:#496449}.tag.warn{background:#f7edda;color:#7b6330}.tag.bad{background:#f6e2e2;color:#875050}.codehelp{padding:12px 14px;border-radius:12px;background:#f8f5ef;border:1px solid var(--line);font-size:12px;line-height:1.65}.previewbox{min-height:420px}.tinyarea{min-height:72px}.twoCol{display:grid;grid-template-columns:1fr 1fr;gap:10px}details{margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#faf8f4}summary{cursor:pointer;font-size:12px;font-weight:800}.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.legend span{font-size:11px;color:var(--muted)}
+    .statusgrid{display:grid;gap:8px;margin-top:12px}.statusrow{display:grid;grid-template-columns:120px 150px 1fr auto;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;font-size:12px}.statusrow .date{font-weight:800}.tag{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:700}.tag.ok{background:#e8f2e7;color:#496449}.tag.warn{background:#f7edda;color:#7b6330}.tag.bad{background:#f6e2e2;color:#875050}.tag.ordinary{background:#e8f2e7;color:#496449}.tag.memorial{background:#f6edf7;color:#725578}.tag.feast{background:#f8eddf;color:#835f32}.tag.sunday{background:#e8eef8;color:#48617d}.tag.solemnity{background:#f6e4e4;color:#8a5050}.codehelp{padding:12px 14px;border-radius:12px;background:#f8f5ef;border:1px solid var(--line);font-size:12px;line-height:1.65}.previewbox{min-height:420px}.tinyarea{min-height:72px}.twoCol{display:grid;grid-template-columns:1fr 1fr;gap:10px}details{margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#faf8f4}summary{cursor:pointer;font-size:12px;font-weight:800}.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.legend span{font-size:11px;color:var(--muted)}
+    .categorybar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.catbtn{background:#fff;border:1px solid var(--line);color:#5d554d;padding:9px 12px}.catbtn.active{background:var(--deep);color:#fff;border-color:var(--deep)}.catbtn b{margin-left:5px}.manager-actions{display:flex;gap:8px;flex-wrap:wrap;padding:12px;border:1px solid var(--line);background:#faf8f4;border-radius:14px;margin-bottom:12px}.resultlist{display:grid;gap:8px}.resultitem{display:grid;grid-template-columns:30px 95px 92px minmax(260px,1fr) auto;gap:10px;align-items:center;padding:11px 12px;background:#fff;border:1px solid var(--line);border-radius:13px}.resultitem:hover{border-color:#cdbba6}.resultitem .rdate{font-weight:800;font-size:12px}.resultitem .rtitle{font-size:12px;line-height:1.4}.resultitem .rmeta{font-size:10px;color:var(--muted);margin-top:3px}.resultitem .ractions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}.resultitem .ractions button{padding:7px 9px;font-size:11px}.checkone{width:17px;height:17px;accent-color:#5b5047}.selectedsummary{font-size:12px;color:var(--muted);margin:8px 0}.category-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0}.catstat{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px}.catstat span{font-size:10px;color:var(--muted)}.catstat b{display:block;font-size:19px;margin-top:3px}
     footer{padding:26px 0 8px;color:var(--muted);font-size:11px;text-align:center}
-    @media (max-width:980px){.grid,.grid3,.stepflow,.stats,.tabs,.row,.row3,.twoCol,.statusrow{grid-template-columns:1fr}.wrap{padding:16px}header{align-items:flex-start;flex-direction:column}}
+    @media (max-width:980px){.grid,.grid3,.stepflow,.stats,.tabs,.row,.row3,.twoCol,.statusrow,.resultitem,.category-stats{grid-template-columns:1fr}.wrap{padding:16px}header{align-items:flex-start;flex-direction:column}}
   </style>
 </head>
 <body>
@@ -230,17 +231,48 @@
     </div>
 
     <div class="card" style="margin-top:18px">
-      <h2>5-5. 날짜별 원문 분석</h2>
-      <div class="btns"><button class="primary" onclick="analyzeMassSource()">① 날짜별 원문 분석</button><button class="purple" onclick="generateAllPosts()">② 전체 HTML 생성</button><button class="green" onclick="downloadPostsZip()">③ 날짜별 TXT ZIP 다운로드</button></div>
+      <h2>5-5. 날짜별 원문 분석 · 5개 카테고리 자동 분류</h2>
+      <div class="hint">분석 결과를 <b>연중 / 기념일 / 축일 / 주일 / 대축일</b>로 각각 분리합니다. 기념일·축일은 같은 HTML 규칙을 쓰고, 주일·대축일도 같은 HTML 규칙을 쓰지만 결과 관리와 다운로드에서는 서로 따로 보입니다.</div>
+      <div class="btns"><button class="primary" onclick="analyzeMassSource()">① 날짜별 원문 분석</button><button class="purple" onclick="generateAllPosts()">② 전체 HTML 생성</button><button class="green" onclick="downloadPostsZip()">③ 전체 TXT ZIP</button><button class="soft" onclick="downloadCategoryFoldersZip()">④ 5분류 폴더 ZIP</button></div>
+      <div class="category-stats">
+        <div class="catstat"><span>연중</span><b id="countOrdinary">0</b></div>
+        <div class="catstat"><span>기념일</span><b id="countMemorial">0</b></div>
+        <div class="catstat"><span>축일</span><b id="countFeast">0</b></div>
+        <div class="catstat"><span>주일</span><b id="countSunday">0</b></div>
+        <div class="catstat"><span>대축일</span><b id="countSolemnity">0</b></div>
+      </div>
       <div id="analysisResult" class="statusgrid"><div class="hint">Word 원문과 제목 목록을 준비한 뒤 [날짜별 원문 분석]을 누르세요.</div></div>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <h2>5-6. 날짜별 결과 관리 · 선택 복사 · 카테고리 다운로드</h2>
+      <div class="hint">원하는 카테고리만 보거나 날짜를 여러 개 체크할 수 있습니다. 한 날짜만 바로 복사할 수도 있고, 선택한 날짜만 ZIP으로 받거나 현재 카테고리 전체를 ZIP으로 받을 수도 있습니다.</div>
+      <div id="categoryBar" class="categorybar">
+        <button class="catbtn active" data-category="전체" onclick="setResultCategory('전체')">전체 <b id="filterCountAll">0</b></button>
+        <button class="catbtn" data-category="연중" onclick="setResultCategory('연중')">연중 <b id="filterCountOrdinary">0</b></button>
+        <button class="catbtn" data-category="기념일" onclick="setResultCategory('기념일')">기념일 <b id="filterCountMemorial">0</b></button>
+        <button class="catbtn" data-category="축일" onclick="setResultCategory('축일')">축일 <b id="filterCountFeast">0</b></button>
+        <button class="catbtn" data-category="주일" onclick="setResultCategory('주일')">주일 <b id="filterCountSunday">0</b></button>
+        <button class="catbtn" data-category="대축일" onclick="setResultCategory('대축일')">대축일 <b id="filterCountSolemnity">0</b></button>
+      </div>
+      <div class="manager-actions">
+        <button class="soft" onclick="selectVisibleResults(true)">현재 목록 전체 선택</button>
+        <button class="soft" onclick="selectVisibleResults(false)">현재 목록 선택 해제</button>
+        <button class="primary" onclick="copySelectedPosts()">선택 HTML 모두 복사</button>
+        <button class="soft" onclick="copyCurrentCategoryPosts()">현재 카테고리 전체 복사</button>
+        <button class="green" onclick="downloadSelectedPostsZip()">선택 날짜 TXT ZIP</button>
+        <button class="purple" onclick="downloadCurrentCategoryZip()">현재 카테고리 ZIP</button>
+      </div>
+      <div id="selectedCount" class="selectedsummary">선택 0개</div>
+      <div id="resultManager" class="resultlist"><div class="hint">먼저 날짜별 원문을 분석해주세요.</div></div>
     </div>
 
     <div class="grid" style="margin-top:18px">
       <div class="card">
-        <h2>5-6. 날짜별 결과 확인</h2>
+        <h2>5-7. 선택한 날짜 상세 확인</h2>
         <label>확인할 날짜</label><select id="postSelect" onchange="showSelectedPost()"><option value="">분석 후 날짜를 선택하세요.</option></select>
         <div id="selectedPostMeta" class="notice" style="margin-top:12px">선택한 날짜의 유형·누락 항목·이미지 연결 상태가 표시됩니다.</div>
-        <div class="btns"><button class="soft" onclick="copyEl('generatedHtml')">HTML 복사</button><button class="green" onclick="downloadSelectedPost()">선택일 TXT 다운로드</button></div>
+        <div class="btns"><button class="soft" onclick="copyEl('generatedHtml')">이 날짜 HTML 복사</button><button class="green" onclick="downloadSelectedPost()">이 날짜 TXT 다운로드</button></div>
       </div>
       <div class="card">
         <h2>티스토리 HTML 미리보기 코드</h2>
@@ -405,6 +437,8 @@ function makePython(){
 const MASS_ROLE_LABELS={thumb:'대표 이미지',first:'제1독서',psalm:'화답송',second:'제2독서',gospel:'복음',reflection:'오늘의 묵상'};
 let massDays=[];
 let massPosts=[];
+let resultCategory='전체';
+const selectedPostKeys=new Set();
 let imageCommon={};
 let imageByDate={};
 
@@ -518,20 +552,38 @@ function calendarNameForKey(key){
 }
 
 function determinePostType(base,titleRoles,seg){
-  if(/주일|대축일/.test(base) || titleRoles.has('psalm')) return '주일/대축일';
-  if(/기념|축일|한가위|재의\s*수요일|성주간|성금요일/.test(base)) return '기념/축일';
+  // 결과 관리에서는 5개 카테고리를 엄격히 분리한다.
+  if(/대축일/.test(base)) return '대축일';
+  if(/주일/.test(base)) return '주일';
+  // 대축일을 먼저 검사해야 '축일'에 잘못 포함되지 않는다.
+  if(/축일/.test(base)) return '축일';
+  if(/기념/.test(base)) return '기념일';
+  // 한국 전례의 특수일 중 주일/대축일 형식이 제목 목록에서 명시된 경우
+  if(titleRoles.has('psalm') || titleRoles.has('second')) return '대축일';
+  if(/한가위|재의\s*수요일|성주간|성금요일/.test(base)) return '축일';
+  return '연중';
+}
+
+function ruleGroupFor(day){
+  if(day.type==='주일' || day.type==='대축일') return '주일/대축일';
+  if(day.type==='기념일' || day.type==='축일') return '기념/축일';
   return '연중';
 }
 
 function expectedRolesFor(day){
-  if(day.type==='주일/대축일') return ['first','psalm','second','gospel','reflection'];
-  if(day.type==='기념/축일'){
+  const group=ruleGroupFor(day);
+  if(group==='주일/대축일') return ['first','psalm','second','gospel','reflection'];
+  if(group==='기념/축일'){
     const arr=['first'];
     if(day.titleRoles.has('second') || day.seg.second.length) arr.push('second');
     arr.push('gospel','reflection');
     return arr;
   }
   return ['first','gospel','reflection'];
+}
+
+function categoryClass(type){
+  return ({'연중':'ordinary','기념일':'memorial','축일':'feast','주일':'sunday','대축일':'solemnity'})[type]||'warn';
 }
 
 function analyzeMassSource(){
@@ -548,19 +600,25 @@ function analyzeMassSource(){
     const day={key:b.key,base,titleRoles,labels,type,seg,raw:b.text};
     day.expected=expectedRolesFor(day);
     day.missing=day.expected.filter(r=>!seg[r]?.length);
-    day.introMissing=type!=='연중' && !seg.intro.length;
+    day.introMissing=ruleGroupFor(day)!=='연중' && !seg.intro.length;
     return day;
   }).sort((a,b)=>a.key.localeCompare(b.key));
 
   const sel=$('postSelect');
   sel.innerHTML='<option value="">날짜를 선택하세요.</option>'+massDays.map(d=>`<option value="${d.key}">${d.key} · ${escapeHtml(d.type)}</option>`).join('');
+
   $('analysisResult').innerHTML=massDays.map(d=>{
     const missing=d.missing.map(r=>MASS_ROLE_LABELS[r]).join(', ');
     const intro=d.introMissing?' · 초대문 없음':'';
     const ok=!d.missing.length&&!d.introMissing;
-    return `<div class="statusrow"><div class="date">${d.key}</div><div><span class="tag ${d.type==='연중'?'ok':d.type==='기념/축일'?'warn':'bad'}">${escapeHtml(d.type)}</span></div><div>${ok?'필수 원문 인식 완료':`확인 필요: ${escapeHtml(missing||'')}${escapeHtml(intro)}`}</div><div><span class="tag ${ok?'ok':'warn'}">${ok?'OK':'CHECK'}</span></div></div>`;
+    return `<div class="statusrow"><div class="date">${d.key}</div><div><span class="tag ${categoryClass(d.type)}">${escapeHtml(d.type)}</span></div><div>${ok?'필수 원문 인식 완료':`확인 필요: ${escapeHtml(missing||'')}${escapeHtml(intro)}`}</div><div><span class="tag ${ok?'ok':'warn'}">${ok?'OK':'CHECK'}</span></div></div>`;
   }).join('');
+
   massPosts=[];
+  resultCategory='전체';
+  selectedPostKeys.clear();
+  updateCategoryCounts();
+  renderResultManager();
   if(massDays[0]){sel.value=massDays[0].key;showSelectedPost()}
 }
 
@@ -739,7 +797,7 @@ function generatePost(day){
   const topTitle=day.labels?.reflection || `${day.base} 오늘의 묵상`;
   let parts=[`<h2 style="text-align: center;" data-ke-size="size26"><b>${escapeHtml(topTitle)}</b></h2>`];
   const topImg=imageParagraph(day,'thumb',topTitle); if(topImg) parts.push(topImg);
-  if(day.type!=='연중' && day.seg.intro.length) parts.push(renderIntro(day.seg.intro));
+  if(ruleGroupFor(day)!=='연중' && day.seg.intro.length) parts.push(renderIntro(day.seg.intro));
   parts.push(sectionBreak());
   const roles=expectedRolesFor(day);
   for(const role of roles){
@@ -766,9 +824,147 @@ function generateAllPosts(){
     if(d.introMissing) msgs.push('초대문');
     if(imgIssue) msgs.push('이미지: '+p.missingImages.map(r=>MASS_ROLE_LABELS[r]).join(', '));
     const ok=!contentIssue&&!imgIssue;
-    return `<div class="statusrow"><div class="date">${d.key}</div><div><span class="tag ${d.type==='연중'?'ok':d.type==='기념/축일'?'warn':'bad'}">${escapeHtml(d.type)}</span></div><div>${ok?'HTML 생성 준비 완료':`확인 필요 · ${escapeHtml(msgs.join(' / '))}`}</div><div><span class="tag ${ok?'ok':'warn'}">${ok?'READY':'CHECK'}</span></div></div>`;
+    return `<div class="statusrow"><div class="date">${d.key}</div><div><span class="tag ${categoryClass(d.type)}">${escapeHtml(d.type)}</span></div><div>${ok?'HTML 생성 준비 완료':`확인 필요 · ${escapeHtml(msgs.join(' / '))}`}</div><div><span class="tag ${ok?'ok':'warn'}">${ok?'READY':'CHECK'}</span></div></div>`;
   }).join('');
+  updateCategoryCounts();
+  renderResultManager();
   const sel=$('postSelect'); if(sel.value) showSelectedPost(); else if(massPosts[0]){sel.value=massPosts[0].day.key;showSelectedPost()}
+}
+
+function postsReady(){
+  if(!massDays.length) analyzeMassSource();
+  if(!massDays.length) return [];
+  if(!massPosts.length) massPosts=massDays.map(day=>({day,html:generatePost(day),missingImages:missingImageRoles(day)}));
+  return massPosts;
+}
+
+function categoryCounts(){
+  const counts={'연중':0,'기념일':0,'축일':0,'주일':0,'대축일':0};
+  massDays.forEach(d=>{ if(counts[d.type]!==undefined) counts[d.type]++; });
+  return counts;
+}
+
+function updateCategoryCounts(){
+  const c=categoryCounts();
+  const ids={
+    '연중':['countOrdinary','filterCountOrdinary'],
+    '기념일':['countMemorial','filterCountMemorial'],
+    '축일':['countFeast','filterCountFeast'],
+    '주일':['countSunday','filterCountSunday'],
+    '대축일':['countSolemnity','filterCountSolemnity']
+  };
+  Object.entries(ids).forEach(([k,arr])=>arr.forEach(id=>{if($(id)) $(id).innerText=c[k]}));
+  if($('filterCountAll')) $('filterCountAll').innerText=massDays.length;
+}
+
+function visibleResultPosts(){
+  const all=postsReady();
+  return resultCategory==='전체'?all:all.filter(p=>p.day.type===resultCategory);
+}
+
+function setResultCategory(category){
+  resultCategory=category;
+  document.querySelectorAll('#categoryBar .catbtn').forEach(b=>b.classList.toggle('active',b.dataset.category===category));
+  renderResultManager();
+}
+
+function postStatusText(p){
+  const msgs=[];
+  if(p.day.missing.length) msgs.push('원문 '+p.day.missing.map(r=>MASS_ROLE_LABELS[r]).join('/'));
+  if(p.day.introMissing) msgs.push('초대문');
+  if(p.missingImages?.length) msgs.push('이미지 '+p.missingImages.map(r=>MASS_ROLE_LABELS[r]).join('/'));
+  return msgs.length?'확인: '+msgs.join(' · '):'준비 완료';
+}
+
+function renderResultManager(){
+  if(!$('resultManager')) return;
+  const posts=visibleResultPosts();
+  if(!massDays.length){$('resultManager').innerHTML='<div class="hint">먼저 날짜별 원문을 분석해주세요.</div>';updateSelectedCount();return;}
+  if(!posts.length){$('resultManager').innerHTML='<div class="hint">이 카테고리에 해당하는 날짜가 없습니다.</div>';updateSelectedCount();return;}
+  $('resultManager').innerHTML=posts.map(p=>{
+    const d=p.day, checked=selectedPostKeys.has(d.key)?'checked':'';
+    const ok=!(d.missing.length||d.introMissing||(p.missingImages||[]).length);
+    return `<div class="resultitem">
+      <input class="checkone" type="checkbox" data-key="${d.key}" ${checked} onchange="togglePostSelection('${d.key}',this.checked)">
+      <div class="rdate">${d.key.slice(5)}</div>
+      <div><span class="tag ${categoryClass(d.type)}">${escapeHtml(d.type)}</span></div>
+      <div class="rtitle"><b>${escapeHtml(d.base.replace(/^\d{4}년\s*\d{1,2}월\s*\d{1,2}일\s*매일미사\s*/,''))}</b><div class="rmeta">${escapeHtml(postStatusText(p))} · ${ok?'READY':'CHECK'}</div></div>
+      <div class="ractions"><button class="soft" onclick="openPost('${d.key}')">보기</button><button class="primary" onclick="copyPostByKey('${d.key}')">복사</button><button class="green" onclick="downloadPostByKey('${d.key}')">TXT</button></div>
+    </div>`;
+  }).join('');
+  updateSelectedCount();
+}
+
+function togglePostSelection(key,checked){
+  if(checked) selectedPostKeys.add(key); else selectedPostKeys.delete(key);
+  updateSelectedCount();
+}
+
+function updateSelectedCount(){
+  if($('selectedCount')) $('selectedCount').innerText=`선택 ${selectedPostKeys.size}개 · 현재 보기: ${resultCategory}`;
+}
+
+function selectVisibleResults(checked){
+  visibleResultPosts().forEach(p=>{if(checked) selectedPostKeys.add(p.day.key); else selectedPostKeys.delete(p.day.key)});
+  renderResultManager();
+}
+
+function openPost(key){
+  const sel=$('postSelect'); sel.value=key; showSelectedPost();
+  $('generatedHtml')?.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function copyPostByKey(key){
+  const p=postsReady().find(x=>x.day.key===key); if(!p) return;
+  navigator.clipboard.writeText(p.html);
+}
+
+function downloadPostByKey(key){
+  const p=postsReady().find(x=>x.day.key===key); if(!p) return;
+  downloadText(postFileName(p.day),p.html);
+}
+
+function copySelectedPosts(){
+  const posts=postsReady().filter(p=>selectedPostKeys.has(p.day.key));
+  if(!posts.length){alert('복사할 날짜를 체크해주세요.');return;}
+  const joined=posts.map(p=>`<!-- ${p.day.key} · ${p.day.type} -->\n${p.html}`).join('\n\n');
+  navigator.clipboard.writeText(joined);
+}
+
+function copyCurrentCategoryPosts(){
+  const posts=visibleResultPosts();
+  if(!posts.length){alert('현재 카테고리에 복사할 결과가 없습니다.');return;}
+  const joined=posts.map(p=>`<!-- ${p.day.key} · ${p.day.type} -->\n${p.html}`).join('\n\n');
+  navigator.clipboard.writeText(joined);
+}
+
+async function zipPosts(posts,filename,withFolders=false){
+  if(!posts.length){alert('다운로드할 결과가 없습니다.');return;}
+  if(typeof JSZip==='undefined'){alert('ZIP 라이브러리를 불러오지 못했습니다. 인터넷 연결 후 다시 열어주세요.');return;}
+  const zip=new JSZip();
+  posts.forEach(p=>{
+    const path=withFolders?`${p.day.type}/${postFileName(p.day)}`:postFileName(p.day);
+    zip.file(path,p.html);
+  });
+  const blob=await zip.generateAsync({type:'blob'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
+async function downloadSelectedPostsZip(){
+  const posts=postsReady().filter(p=>selectedPostKeys.has(p.day.key));
+  if(!posts.length){alert('다운로드할 날짜를 체크해주세요.');return;}
+  await zipPosts(posts,`말씀과함께_선택_${posts.length}일.zip`);
+}
+
+async function downloadCurrentCategoryZip(){
+  const posts=visibleResultPosts();
+  if(resultCategory==='전체') return zipPosts(posts,`말씀과함께_전체_${$('year').value}년_${$('month').value}월.zip`);
+  return zipPosts(posts,`말씀과함께_${resultCategory}_${$('year').value}년_${$('month').value}월.zip`);
+}
+
+async function downloadCategoryFoldersZip(){
+  const posts=postsReady();
+  await zipPosts(posts,`말씀과함께_5분류_${$('year').value}년_${$('month').value}월.zip`,true);
 }
 
 function showSelectedPost(){
@@ -779,7 +975,7 @@ function showSelectedPost(){
   $('generatedHtml').innerText=html;
   const missing=day.missing.map(r=>MASS_ROLE_LABELS[r]);
   const imgs=(p?.missingImages || missingImageRoles(day)).map(r=>MASS_ROLE_LABELS[r]);
-  $('selectedPostMeta').innerHTML=`<b>${escapeHtml(day.type)}</b> · 원문 ${missing.length?`누락: ${escapeHtml(missing.join(', '))}`:'필수 섹션 인식 완료'} · 초대문 ${day.type==='연중'?'해당 없음':day.seg.intro.length?'인식됨':'확인 필요'} · 이미지 ${imgs.length?`미연결: ${escapeHtml(imgs.join(', '))}`:'연결 완료'}`;
+  $('selectedPostMeta').innerHTML=`<b>${escapeHtml(day.type)}</b> · 원문 ${missing.length?`누락: ${escapeHtml(missing.join(', '))}`:'필수 섹션 인식 완료'} · 초대문 ${ruleGroupFor(day)==='연중'?'해당 없음':day.seg.intro.length?'인식됨':'확인 필요'} · 이미지 ${imgs.length?`미연결: ${escapeHtml(imgs.join(', '))}`:'연결 완료'}`;
 }
 
 function safeFileName(s){return s.replace(/[\\/:*?"<>|]/g,'_').replace(/\s+/g,' ').trim()}
@@ -797,15 +993,11 @@ function downloadSelectedPost(){
 }
 
 async function downloadPostsZip(){
-  if(!massPosts.length) generateAllPosts();
-  if(!massPosts.length) return;
-  if(typeof JSZip==='undefined'){alert('ZIP 라이브러리를 불러오지 못했습니다. 인터넷 연결 후 다시 열어주세요.');return}
-  const issues=massPosts.filter(p=>p.day.missing.length || p.day.introMissing || p.missingImages.length);
+  const posts=postsReady();
+  if(!posts.length) return;
+  const issues=posts.filter(p=>p.day.missing.length || p.day.introMissing || p.missingImages.length);
   if(issues.length && !confirm(`${issues.length}일에 원문/초대문/이미지 확인 항목이 있습니다. 그래도 ZIP을 만들까요?`)) return;
-  const zip=new JSZip();
-  massPosts.forEach(p=>zip.file(postFileName(p.day),p.html));
-  const blob=await zip.generateAsync({type:'blob'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`말씀과함께_${$('year').value}년_${$('month').value}월_HTML_TXT.zip`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  await zipPosts(posts,`말씀과함께_${$('year').value}년_${$('month').value}월_HTML_TXT.zip`);
 }
 
 function titleLines(y,m,rows){
