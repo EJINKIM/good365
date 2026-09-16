@@ -7,92 +7,195 @@
   <script src="https://unpkg.com/mammoth@1.8.0/mammoth.browser.min.js"></script>
   <style>
     :root{
-      --bg:#f5f2ec; --panel:#fffdf9; --line:#e7dfd3; --text:#2f2a25; --muted:#7f756a;
-      --accent:#8d6b45; --accent2:#c9ab84; --green:#6f876e; --rose:#b98686; --purple:#8e7ca6;
+      --bg:#f7f4ee; --panel:#fffdf9; --line:#e5ddd0; --text:#2f2a25; --muted:#7f756a;
+      --accent:#8d6b45; --deep:#3a332d; --soft:#f1ebe3; --green:#e7efe5; --purple:#ece7f3;
       --shadow:0 18px 50px rgba(82,65,46,.08);
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:Inter, Pretendard, "Noto Sans KR", Arial, sans-serif;background:linear-gradient(180deg,#f8f6f1 0%,#f2eee7 100%);color:var(--text)}
-    .wrap{max-width:1440px;margin:0 auto;padding:28px}
-    header{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:20px}
-    .brand{display:flex;align-items:center;gap:14px}.cross{width:44px;height:44px;border-radius:14px;background:#3a332d;color:#fff;display:grid;place-items:center;font-size:24px;box-shadow:var(--shadow)}
-    h1{font-size:28px;margin:0}.sub{color:var(--muted);font-size:14px;margin-top:4px}
-    .badge{padding:9px 12px;border:1px solid var(--line);border-radius:999px;background:#fff8;backdrop-filter:blur(8px);font-size:12px;color:var(--muted)}
+    body{margin:0;font-family:Inter,Pretendard,"Noto Sans KR",Arial,sans-serif;background:linear-gradient(180deg,#f8f6f1 0%,#f2eee7 100%);color:var(--text)}
+    .wrap{max-width:1460px;margin:0 auto;padding:28px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:20px}
+    .brand{display:flex;align-items:center;gap:14px}
+    .cross{width:44px;height:44px;border-radius:14px;background:var(--deep);color:#fff;display:grid;place-items:center;font-size:24px;box-shadow:var(--shadow)}
+    h1{font-size:28px;margin:0}.sub{font-size:14px;color:var(--muted);margin-top:4px}
+    .badge{padding:9px 12px;border:1px solid var(--line);border-radius:999px;background:#fff8;backdrop-filter:blur(10px);font-size:12px;color:var(--muted)}
     .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}
     .tab{border:1px solid var(--line);background:rgba(255,255,255,.72);border-radius:16px;padding:16px 18px;text-align:left;cursor:pointer;transition:.2s;box-shadow:0 6px 18px rgba(82,65,46,.03)}
-    .tab strong{display:block;font-size:16px}.tab span{font-size:12px;color:var(--muted)}.tab.active{background:#2f2a25;color:#fff;border-color:#2f2a25;transform:translateY(-1px)}.tab.active span{color:#d9d1c7}
+    .tab strong{display:block;font-size:16px}.tab span{font-size:12px;color:var(--muted)}
+    .tab.active{background:var(--deep);color:#fff;border-color:var(--deep);transform:translateY(-1px)}
+    .tab.active span{color:#d9d1c7}
     .section{display:none}.section.active{display:block}
-    .grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .grid{display:grid;grid-template-columns:1.08fr .92fr;gap:18px}
+    .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
     .card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow)}
-    .card h2{font-size:18px;margin:0 0 6px}.card h3{font-size:15px;margin:0 0 10px}.hint{font-size:12px;color:var(--muted);line-height:1.6}
+    .card h2{font-size:18px;margin:0 0 6px}.card h3{font-size:15px;margin:0 0 8px}
+    .hint{font-size:12px;color:var(--muted);line-height:1.65}
+    .notice{padding:14px;border-radius:14px;background:#f4efe7;border:1px solid #e7ddcf;font-size:12px;line-height:1.7;margin-bottom:14px}
+    .stepflow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px}
+    .step{padding:11px;border-radius:12px;border:1px solid var(--line);background:#fff;font-size:12px;text-align:center}
     label{display:block;font-size:12px;font-weight:700;margin:14px 0 7px;color:#5d554d}
-    input,select,textarea{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;padding:11px 12px;font:inherit;color:var(--text);outline:none}textarea{min-height:180px;resize:vertical;line-height:1.55}
+    input,select,textarea{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;padding:11px 12px;font:inherit;color:var(--text);outline:none}
+    textarea{min-height:160px;resize:vertical;line-height:1.58}
     input:focus,textarea:focus,select:focus{border-color:#b79a77;box-shadow:0 0 0 3px rgba(183,154,119,.12)}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-    button{border:0;border-radius:11px;padding:10px 14px;font-weight:700;cursor:pointer}.primary{background:#3a332d;color:#fff}.soft{background:#ede7df;color:#433a31}.green{background:#e5eee4;color:#486146}.rose{background:#f1e4e4;color:#775050}.purple{background:#ece7f2;color:#5e5171}
-    pre{white-space:pre-wrap;word-break:break-word;background:#26221f;color:#f8f5ef;border-radius:14px;padding:16px;max-height:520px;overflow:auto;font-size:12px;line-height:1.55}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+    .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+    button{border:0;border-radius:11px;padding:10px 14px;font-weight:700;cursor:pointer}
+    .primary{background:var(--deep);color:#fff}.soft{background:var(--soft);color:#433a31}.green{background:var(--green);color:#486146}.purple{background:var(--purple);color:#5e5171}
+    pre{white-space:pre-wrap;word-break:break-word;background:#26221f;color:#f8f5ef;border-radius:14px;padding:16px;max-height:540px;overflow:auto;font-size:12px;line-height:1.55}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+    .stat{padding:12px;border-radius:14px;background:#faf7f2;border:1px solid var(--line)}
+    .stat span{font-size:11px;color:var(--muted)} .stat b{display:block;font-size:20px;margin-top:4px}
     .pillbox{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.pill{padding:6px 9px;border-radius:999px;font-size:11px;border:1px solid var(--line);background:#fff}
-    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}.stat{padding:12px;border-radius:14px;background:#faf7f2;border:1px solid var(--line)}.stat b{display:block;font-size:20px;margin-top:4px}.stat span{font-size:11px;color:var(--muted)}
-    .drop{border:1.5px dashed #cbbca9;border-radius:16px;padding:18px;text-align:center;background:#fbf8f3}.drop input{border:0;background:transparent}
+    .drop{border:1.5px dashed #cbbca9;border-radius:16px;padding:18px;text-align:center;background:#fbf8f3}
     .mini{font-size:11px;color:var(--muted)}
-    .notice{padding:13px 14px;border-radius:14px;background:#f4efe7;border:1px solid #e7ddcf;font-size:12px;line-height:1.65;margin-bottom:14px}
-    .flow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:14px}.step{padding:10px;border-radius:12px;background:#fff;border:1px solid var(--line);font-size:11px;text-align:center}
     footer{padding:26px 0 8px;color:var(--muted);font-size:11px;text-align:center}
-    @media (max-width:900px){.grid,.grid3,.stats,.flow{grid-template-columns:1fr}.tabs{grid-template-columns:1fr}.wrap{padding:16px}header{align-items:flex-start;flex-direction:column}}
+    @media (max-width:980px){.grid,.grid3,.stepflow,.stats,.tabs,.row,.row3{grid-template-columns:1fr}.wrap{padding:16px}header{align-items:flex-start;flex-direction:column}}
   </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <div class="brand"><div class="cross">✝</div><div><h1>말씀과함께</h1><div class="sub">가톨릭 매일미사 · 제목 · 키워드 · 이미지 자동화 작업실</div></div></div>
+    <div class="brand">
+      <div class="cross">✝</div>
+      <div>
+        <h1>말씀과함께</h1>
+        <div class="sub">가톨릭 매일미사 · 글자동화 · 제목/키워드 · 이미지 자동화 작업실</div>
+      </div>
+    </div>
     <div class="badge">GitHub Pages에 바로 올릴 수 있는 단일 index.html</div>
   </header>
 
   <div class="tabs">
-    <button class="tab active" data-tab="auto"><strong>① 글자동화</strong><span>전례력 분류 · 매일미사 수집 코드 · Word 정리</span></button>
+    <button class="tab active" data-tab="auto"><strong>① 글자동화</strong><span>전례력 다듬기 → 함수 코드 → PSD 코드 → Word 정리</span></button>
     <button class="tab" data-tab="seo"><strong>② 제목 및 키워드 추출</strong><span>일자별 제목 패턴 · 키워드 자동 생성</span></button>
     <button class="tab" data-tab="image"><strong>③ 이미지 만들기</strong><span>이미지 프롬프트 · PSD 자동화 코드 틀</span></button>
   </div>
 
   <section id="auto" class="section active">
-    <div class="notice"><b>작업 흐름</b> · 굿뉴스/전례력 목록 준비 → 날짜별 분류 → 매일미사 수집 Python 코드 생성 → Word 원문 불러오기 → 불필요 부분 제거 → 소제목 배치 → 주말/연중/기념일/축일 4파트용 출력.</div>
+    <div class="notice"><b>순서대로 진행</b> · ① 가톨릭 굿뉴스/매일미사 전례력 리스트를 그대로 복붙 → ② <b>전례력 문구 다듬기</b> → ③ <b>get_liturgical_text()</b> 함수 코드 생성 → ④ 예시 bbbb 형식의 <b>PSD 자동화 전체 코드</b> 생성 → ⑤ 매일미사 전문 수집 코드와 Word 정리 작업 진행.</div>
+
     <div class="grid">
       <div class="card">
         <h2>1. 월 전례력 입력 · 자동 분류</h2>
-        <div class="hint">해당 월의 전례력 목록을 그대로 붙여넣으세요. “1: 연중 제22주간 월요일” 같은 형태도 인식합니다.</div>
-        <div class="row"><div><label>연도</label><input id="year" type="number" value="2026"></div><div><label>월</label><input id="month" type="number" min="1" max="12" value="9"></div></div>
-        <label>전례력 목록</label>
-        <textarea id="calendar" placeholder='1: "연중 제22주간 월요일"\n2: "연중 제22주간 화요일"\n3: "성 대 그레고리오 교황 학자 기념일"'></textarea>
-        <div class="btns"><button class="primary" onclick="classifyCalendar()">전례력 분류하기</button><button class="soft" onclick="makeCalendarPrompt()">분류 프롬프트 만들기</button></div>
-        <div class="stats"><div class="stat"><span>주일</span><b id="sSunday">0</b></div><div class="stat"><span>연중/평일</span><b id="sOrdinary">0</b></div><div class="stat"><span>기념일</span><b id="sMemorial">0</b></div><div class="stat"><span>축일/대축일</span><b id="sFeast">0</b></div></div>
-        <label>분류 결과</label><pre id="classResult">아직 분류하지 않았습니다.</pre>
+        <div class="hint">아래에는 굿뉴스/매일미사 사이트에서 복사한 <b>원본 전례력 리스트</b>를 그대로 붙여넣으세요. 예: <code>1일(목) (백)아기 예수의 성녀 데레사... Memorial of ...</code></div>
+        <div class="row">
+          <div><label>연도</label><input id="year" type="number" value="2026"></div>
+          <div><label>월</label><input id="month" type="number" min="1" max="12" value="10"></div>
+        </div>
+        <label>원본 전례력 붙여넣기</label>
+        <textarea id="calendarRaw" placeholder="예)&#10;1일(목) (백)아기 예수의 성녀 데레사 동정 학자 기념일 Memorial of Saint Therese of the Child Jesus, Virgin and Doctor of the Church&#10;2일(금) (백)수호천사 기념일 Memorial of the Holy Guardian Angels"></textarea>
+        <div class="btns">
+          <button class="primary" onclick="refineLiturgical()">전례력 문구 다듬기</button>
+          <button class="soft" onclick="classifyCalendar()">자동 분류하기</button>
+          <button class="green" onclick="downloadText('전례력_정리.txt',$('liturgicalClean').value)">정리본 다운로드</button>
+        </div>
+        <label>전례력 문구 다듬기 결과</label>
+        <textarea id="liturgicalClean" placeholder="여기에 영어 제거 / (자)(백)(홍)(녹) 제거 / 날짜: 전례명 형식 정리가 표시됩니다."></textarea>
+        <div class="stats">
+          <div class="stat"><span>주일</span><b id="sSunday">0</b></div>
+          <div class="stat"><span>연중/평일</span><b id="sOrdinary">0</b></div>
+          <div class="stat"><span>기념일</span><b id="sMemorial">0</b></div>
+          <div class="stat"><span>축일/대축일</span><b id="sFeast">0</b></div>
+        </div>
+        <label>분류 결과</label>
+        <pre id="classResult">아직 분류하지 않았습니다.</pre>
       </div>
+
       <div class="card">
-        <h2>2. 매일미사 전문 수집 Python 코드</h2>
-        <div class="hint">연/월을 선택하면 날짜 범위를 자동 계산해서 <b>extract_missa.py</b> 코드를 만듭니다. 출력 DOCX는 스크립트와 같은 폴더에 저장됩니다.</div>
-        <div class="btns"><button class="primary" onclick="makePython()">Python 코드 생성</button><button class="soft" onclick="copyEl('pythonCode')">코드 복사</button><button class="green" onclick="downloadText('extract_missa.py',document.getElementById('pythonCode').innerText)">.py 다운로드</button></div>
-        <pre id="pythonCode"># 위의 연/월을 선택하고 [Python 코드 생성]을 누르세요.</pre>
-        <div class="pillbox"><span class="pill">requests</span><span class="pill">beautifulsoup4</span><span class="pill">python-docx</span><span class="pill">psd-tools</span><span class="pill">Pillow</span></div>
+        <h2>2. 날짜에 따른 전례력 텍스트 함수 만들기</h2>
+        <div class="hint">정리된 전례력 문구를 바탕으로, 아래처럼 <b>get_liturgical_text(date)</b> 함수를 바로 만들어 줍니다. VS Code에 그대로 붙여넣을 수 있습니다.</div>
+        <div class="btns">
+          <button class="primary" onclick="makeLiturgicalFunction()">함수 코드 생성</button>
+          <button class="soft" onclick="copyEl('liturgicalFunction')">복사</button>
+          <button class="green" onclick="downloadText('liturgical_function.py',$('liturgicalFunction').innerText)">.py 다운로드</button>
+        </div>
+        <pre id="liturgicalFunction"># [전례력 문구 다듬기]를 먼저 눌러주세요.</pre>
       </div>
     </div>
 
     <div class="grid" style="margin-top:18px">
       <div class="card">
-        <h2>3. MS Word 원문 불러오기 · 정리</h2>
-        <div class="drop"><div><b>.docx 파일 선택</b></div><div class="mini">브라우저에서 텍스트를 읽어옵니다. 오래된 .doc 파일은 .docx로 저장 후 사용하세요.</div><input id="docxFile" type="file" accept=".docx" onchange="readDocx(event)"></div>
-        <label>원문 전문</label><textarea id="rawText" placeholder="Word에서 읽은 텍스트가 여기에 표시됩니다."></textarea>
-        <div class="btns"><button class="primary" onclick="cleanMassText()">불필요 부분 자동 정리</button><button class="soft" onclick="makeCleanupPrompt()">GPT 정리 프롬프트 만들기</button><button class="green" onclick="downloadText('정리된_매일미사.txt',document.getElementById('cleanedText').value)">정리본 다운로드</button></div>
+        <h2>3. 예시 bbbb 형식으로 전체 PSD 자동화 코드 만들기</h2>
+        <div class="hint">아래 값들을 필요에 맞게 바꾼 뒤, <b>전체 코드 생성</b>을 누르면 예시 bbbb 형식에 맞춰 <b>전례력 함수가 자동 대입된 전체 Python 코드</b>를 만듭니다.</div>
+        <div class="row">
+          <div><label>날짜 글꼴 경로</label><input id="dateFontPath" value="C:/Users/전례력글꼴/Cafe24Ohsquare.ttf"></div>
+          <div><label>전례력 글꼴 경로</label><input id="liturgicalFontPath" value="C:/Users/전례력글꼴/DXHanlgrumStd-Regular.otf"></div>
+        </div>
+        <div class="row">
+          <div><label>PSD 파일 경로</label><input id="psdPath" value="C:/Users/26au.psd"></div>
+          <div><label>출력 폴더 경로</label><input id="outputDir" value="C:/Users/26년10월전례이미지"></div>
+        </div>
+        <div class="row3">
+          <div><label>날짜 글꼴 크기</label><input id="dateFontSize" type="number" value="40"></div>
+          <div><label>전례력 글꼴 크기</label><input id="litFontSize" type="number" value="35"></div>
+          <div><label>최대 너비</label><input id="maxWidth" type="number" value="500"></div>
+        </div>
+        <div class="row3">
+          <div><label>날짜 Y좌표</label><input id="dateY" type="number" value="242"></div>
+          <div><label>전례력 Y좌표</label><input id="liturgyY" type="number" value="285"></div>
+          <div><label>출력 파일 접두어</label><input id="thumbPrefix" value="thumbnail_"></div>
+        </div>
+        <div class="btns">
+          <button class="primary" onclick="makeFullPsdCode()">전체 코드 생성</button>
+          <button class="soft" onclick="copyEl('fullPsdCode')">복사</button>
+          <button class="green" onclick="downloadText('make_liturgical_images.py',$('fullPsdCode').innerText)">.py 다운로드</button>
+        </div>
+        <pre id="fullPsdCode"># [함수 코드 생성] 후 전체 코드를 만들어 주세요.</pre>
       </div>
+
       <div class="card">
-        <h2>4. 정리 결과 · 4개 파트 준비</h2>
-        <div class="hint">기본 룰: 입당송·본기도·예물기도·영성체송·영성체 후 묵상/기도·평일 화답송·복음환호송 등을 제거하고, 제1독서/제2독서/복음/오늘의 묵상 및 주일 화답송을 남기는 방향으로 정리합니다.</div>
-        <label>정리된 텍스트</label><textarea id="cleanedText" placeholder="정리 결과"></textarea>
-        <div class="btns"><button class="primary" onclick="splitFourParts()">주말/연중/기념일/축일로 분리</button><button class="soft" onclick="downloadFour()">4개 파일 다운로드</button></div>
-        <pre id="fourParts">전례력 분류 결과와 정리된 본문을 바탕으로 4개 파트를 만들 수 있습니다.\n\n※ 이후 주실 ‘주말분/연중분/기념일분/축일분’ 각각의 최종 코드 규칙을 이 자리에 연결하도록 설계해두었습니다.</pre>
+        <h2>4. 매일미사 전문 수집 Python 코드</h2>
+        <div class="hint">이 부분은 원문 전문을 수집하는 <b>extract_missa.py</b> 코드입니다. 파일 아웃풋은 파이썬 스크립트와 같은 폴더에 저장됩니다.</div>
+        <div class="btns">
+          <button class="primary" onclick="makePython()">extract_missa.py 생성</button>
+          <button class="soft" onclick="copyEl('pythonCode')">복사</button>
+          <button class="green" onclick="downloadText('extract_missa.py',$('pythonCode').innerText)">.py 다운로드</button>
+        </div>
+        <pre id="pythonCode"># 위의 연/월을 기준으로 extract_missa.py가 생성됩니다.</pre>
+        <div class="pillbox">
+          <span class="pill">requests</span><span class="pill">beautifulsoup4</span><span class="pill">python-docx</span><span class="pill">psd-tools</span><span class="pill">Pillow</span>
+        </div>
       </div>
     </div>
 
-    <div class="flow"><div class="step">① 전례력 붙여넣기</div><div class="step">② 4종 분류</div><div class="step">③ Python 수집</div><div class="step">④ Word 정리</div><div class="step">⑤ 티스토리/워드프레스 발행</div></div>
+    <div class="grid" style="margin-top:18px">
+      <div class="card">
+        <h2>5. MS Word 원문 불러오기 · 정리</h2>
+        <div class="drop">
+          <div><b>.docx 파일 선택</b></div>
+          <div class="mini">브라우저에서 텍스트를 읽어옵니다. 오래된 .doc 파일은 .docx로 저장 후 사용하세요.</div>
+          <input id="docxFile" type="file" accept=".docx" onchange="readDocx(event)">
+        </div>
+        <label>원문 전문</label>
+        <textarea id="rawText" placeholder="Word에서 읽은 텍스트가 여기에 표시됩니다."></textarea>
+        <div class="btns">
+          <button class="primary" onclick="cleanMassText()">불필요 부분 자동 정리</button>
+          <button class="soft" onclick="makeCleanupPrompt()">GPT 정리 프롬프트 만들기</button>
+          <button class="green" onclick="downloadText('정리된_매일미사.txt',$('cleanedText').value)">정리본 다운로드</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>6. 정리 결과 · 4개 파트 준비</h2>
+        <div class="hint">기본 룰: 입당송·본기도·예물기도·영성체송·영성체 후 묵상/기도·평일 화답송·복음환호송 등을 제거하고, 제1독서/제2독서/복음/오늘의 묵상 및 주일 화답송을 남기는 방향으로 정리합니다.</div>
+        <label>정리된 텍스트</label>
+        <textarea id="cleanedText" placeholder="정리 결과"></textarea>
+        <div class="btns">
+          <button class="primary" onclick="splitFourParts()">주말/연중/기념일/축일로 분리</button>
+          <button class="soft" onclick="downloadFour()">4개 파일 다운로드</button>
+        </div>
+        <pre id="fourParts">전례력 분류 결과와 정리된 본문을 바탕으로 4개 파트를 만들 수 있습니다. 이후 주실 ‘주말분/연중분/기념일분/축일분’ 각각의 최종 코드 규칙을 이 자리에 연결할 수 있게 설계해두었습니다.</pre>
+      </div>
+    </div>
+
+    <div class="stepflow">
+      <div class="step">① 전례력 원본 복붙</div>
+      <div class="step">② 전례력 문구 다듬기</div>
+      <div class="step">③ 함수 코드 생성</div>
+      <div class="step">④ 전체 PSD 코드 생성</div>
+      <div class="step">⑤ Word/발행 작업</div>
+    </div>
   </section>
 
   <section id="seo" class="section">
@@ -100,94 +203,236 @@
       <div class="card">
         <h2>제목 패턴 자동 생성</h2>
         <div class="hint">전례력 목록을 바탕으로 평일/주일에 필요한 항목 수를 달리해서 일자별 제목 세트를 만듭니다.</div>
-        <div class="row"><div><label>연도</label><input id="seoYear" type="number" value="2026"></div><div><label>월</label><input id="seoMonth" type="number" min="1" max="12" value="9"></div></div>
-        <label>전례력 목록</label><textarea id="seoCalendar" placeholder="전례력 목록을 붙여넣으세요."></textarea>
-        <div class="btns"><button class="primary" onclick="makeTitles()">제목 세트 생성</button><button class="soft" onclick="copyEl('titleOutput')">복사</button><button class="green" onclick="downloadText('제목_목록.txt',document.getElementById('titleOutput').innerText)">다운로드</button></div>
+        <div class="row"><div><label>연도</label><input id="seoYear" type="number" value="2026"></div><div><label>월</label><input id="seoMonth" type="number" min="1" max="12" value="10"></div></div>
+        <label>전례력 목록</label>
+        <textarea id="seoCalendar" placeholder="전례력 목록을 붙여넣으세요. 정리된 1: \"...\" 형식 또는 굿뉴스 원본도 인식합니다."></textarea>
+        <div class="btns"><button class="primary" onclick="makeTitles()">제목 세트 생성</button><button class="soft" onclick="copyEl('titleOutput')">복사</button><button class="green" onclick="downloadText('제목_목록.txt',$('titleOutput').innerText)">다운로드</button></div>
         <pre id="titleOutput">생성된 제목이 표시됩니다.</pre>
       </div>
       <div class="card">
         <h2>키워드 자동 생성</h2>
         <div class="hint">사용자가 주신 패턴대로 날짜 + 전례명 + 오늘의 묵상 + 매일미사 + 가톨릭 미사 + 신부님강론 조합을 만듭니다.</div>
-        <div class="btns"><button class="primary" onclick="makeKeywords()">A + 키워드 생성</button><button class="soft" onclick="copyEl('keywordOutput')">복사</button><button class="green" onclick="downloadText('키워드_목록.txt',document.getElementById('keywordOutput').innerText)">다운로드</button></div>
-        <pre id="keywordOutput">생성된 키워드가 표시됩니다.</pre>
+        <div class="btns"><button class="primary" onclick="makeKeywords()">A + 키워드 생성</button><button class="soft" onclick="copyEl('keywordOutput')">복사</button><button class="green" onclick="downloadText('키워드_목록.txt',$('keywordOutput').innerText)">다운로드</button></div>
+        <pre id="keywordOutput">생성된 A/키워드 결과가 표시됩니다.</pre>
       </div>
     </div>
     <div class="card" style="margin-top:18px">
-      <h2>GPT용 통합 프롬프트 생성기</h2>
-      <div class="hint">매달 긴 예시를 다시 붙이지 않아도 되도록, 현재 입력한 전례력과 규칙을 하나의 프롬프트로 묶어줍니다.</div>
-      <div class="btns"><button class="primary" onclick="makeSeoPrompt()">통합 프롬프트 만들기</button><button class="soft" onclick="copyEl('seoPrompt')">복사</button></div>
-      <pre id="seoPrompt">통합 프롬프트가 표시됩니다.</pre>
+      <h2>GPT 프롬프트 묶음</h2>
+      <div class="hint">전례력만 있으면 제목/키워드용 프롬프트를 재활용할 수 있도록 자동 작성합니다.</div>
+      <div class="btns"><button class="primary" onclick="makeSeoPrompt()">프롬프트 생성</button><button class="soft" onclick="copyEl('seoPrompt')">복사</button></div>
+      <pre id="seoPrompt">여기에 프롬프트가 표시됩니다.</pre>
     </div>
   </section>
 
   <section id="image" class="section">
     <div class="grid3">
-      <div class="card"><h3>1. 이미지 기본 정보</h3><label>날짜</label><input id="imgDate" placeholder="2026년 9월 20일"><label>전례명</label><input id="imgMass" placeholder="성 김대건 안드레아... 대축일"><label>묵상 핵심 키워드</label><input id="imgKey" placeholder="희망, 순교, 충실함"></div>
-      <div class="card"><h3>2. 비주얼 스타일</h3><label>분위기</label><select id="imgMood"><option>차분하고 성스럽게</option><option>따뜻하고 자연스럽게</option><option>고전 성화 느낌</option><option>미니멀한 현대 가톨릭</option></select><label>비율</label><select id="imgRatio"><option>1:1 인스타</option><option>4:5 피드</option><option>16:9 블로그</option><option>9:16 쇼츠</option></select><label>텍스트 사용</label><select id="imgText"><option>텍스트 없음</option><option>짧은 제목만</option><option>날짜 + 제목</option></select></div>
-      <div class="card"><h3>3. 자동화 출력</h3><div class="btns"><button class="primary" onclick="makeImagePrompt()">이미지 프롬프트 생성</button><button class="purple" onclick="makePsdCode()">PSD 자동화 코드 틀</button></div><div class="mini" style="margin-top:12px">psd-tools + Pillow를 활용한 텍스트 레이어/템플릿 자동화용 Python 기본 골격을 생성합니다.</div></div>
+      <div class="card">
+        <h3>1. 이미지 기본 정보</h3>
+        <label>날짜</label><input id="imgDate" placeholder="2026년 10월 1일">
+        <label>전례명</label><input id="imgMass" placeholder="아기 예수의 성녀 데레사 동정 학자 기념일">
+        <label>묵상 핵심 키워드</label><input id="imgKey" placeholder="희망, 신뢰, 사랑">
+      </div>
+      <div class="card">
+        <h3>2. 비주얼 스타일</h3>
+        <label>분위기</label><select id="imgMood"><option>차분하고 성스럽게</option><option>따뜻하고 자연스럽게</option><option>고전 성화 느낌</option><option>미니멀한 현대 가톨릭</option></select>
+        <label>비율</label><select id="imgRatio"><option>1:1 인스타</option><option>4:5 피드</option><option>16:9 블로그</option><option>9:16 쇼츠</option></select>
+        <label>텍스트 사용</label><select id="imgText"><option>텍스트 없음</option><option>짧은 제목만</option><option>날짜 + 제목</option></select>
+      </div>
+      <div class="card">
+        <h3>3. 자동화 출력</h3>
+        <div class="btns"><button class="primary" onclick="makeImagePrompt()">이미지 프롬프트 생성</button><button class="purple" onclick="makePsdCode()">PSD 자동화 코드 틀</button></div>
+        <div class="mini" style="margin-top:12px">psd-tools + Pillow를 활용한 텍스트 레이어/템플릿 자동화용 Python 기본 골격을 생성합니다.</div>
+      </div>
     </div>
-    <div class="grid" style="margin-top:18px"><div class="card"><h2>이미지 생성 프롬프트</h2><pre id="imagePrompt">정보를 입력한 뒤 생성하세요.</pre></div><div class="card"><h2>PSD 자동화 Python</h2><div class="btns"><button class="soft" onclick="copyEl('psdCode')">복사</button><button class="green" onclick="downloadText('make_image.py',document.getElementById('psdCode').innerText)">.py 다운로드</button></div><pre id="psdCode">PSD 자동화 코드가 표시됩니다.</pre></div></div>
+    <div class="grid" style="margin-top:18px">
+      <div class="card"><h2>이미지 생성 프롬프트</h2><pre id="imagePrompt">정보를 입력한 뒤 생성하세요.</pre></div>
+      <div class="card"><h2>PSD 자동화 Python</h2><div class="btns"><button class="soft" onclick="copyEl('psdCode')">복사</button><button class="green" onclick="downloadText('make_image.py',$('psdCode').innerText)">.py 다운로드</button></div><pre id="psdCode">PSD 자동화 코드가 표시됩니다.</pre></div>
+    </div>
   </section>
 
   <footer>말씀과함께 · 개인 콘텐츠 제작 워크플로우 정리용 웹앱</footer>
 </div>
+
 <script>
 const $=id=>document.getElementById(id);
 document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.tab).classList.add('active')}));
-function parseCalendar(text){
-  return text.split(/\n+/).map(s=>s.trim()).filter(Boolean).map(line=>{
-    const m=line.match(/^\s*(\d{1,2})\s*[:.)-]?\s*["“]?(.+?)["”]?,?\s*$/); return m?{day:+m[1],name:m[2].trim()}:null;
-  }).filter(Boolean);
+
+function parseRawLine(line){
+  let s=(line||'').replace(/\u00a0/g,' ').trim();
+  if(!s) return null;
+  let m=s.match(/^\s*(\d{1,2})\s*일(?:\([^)]+\))?\s*(?:\((?:자|백|홍|녹|보|금|은|흑)\))?\s*(.+)$/);
+  if(m){
+    let day=+m[1], name=m[2].trim();
+    name=name.replace(/\s+[A-Za-z].*$/,'').trim();
+    name=name.replace(/^['"“”]+|['"“”,]+$/g,'').trim();
+    return {day,name};
+  }
+  m=s.match(/^\s*(\d{1,2})\s*[:.)-]?\s*["“]?(.+?)["”,]?\s*$/);
+  if(m){
+    return {day:+m[1], name:m[2].trim()};
+  }
+  return null;
 }
+
+function parseCalendar(text){
+  return (text||'').split(/\n+/).map(parseRawLine).filter(Boolean).sort((a,b)=>a.day-b.day);
+}
+
+function toCleanCalendar(rows){
+  return rows.map(r=>`${r.day}: "${r.name}"`).join('\n');
+}
+
 function cat(name){
   if(/주일/.test(name)) return '주일';
   if(/대축일|축일/.test(name)) return '축일';
   if(/기념/.test(name)) return '기념일';
   return '연중/평일';
 }
+
+function refineLiturgical(){
+  const rows=parseCalendar($('calendarRaw').value);
+  $('liturgicalClean').value=rows.length?toCleanCalendar(rows):'';
+  $('seoCalendar').value=$('liturgicalClean').value;
+  localStorage.setItem('massCalendarRaw',$('calendarRaw').value);
+  localStorage.setItem('massCalendarClean',$('liturgicalClean').value);
+  if(rows.length) classifyCalendar();
+}
+
 function classifyCalendar(){
- const rows=parseCalendar($('calendar').value); const g={'주일':[],'연중/평일':[],'기념일':[],'축일':[]}; rows.forEach(r=>g[cat(r.name)].push(r));
- $('sSunday').innerText=g['주일'].length;$('sOrdinary').innerText=g['연중/평일'].length;$('sMemorial').innerText=g['기념일'].length;$('sFeast').innerText=g['축일'].length;
- $('classResult').innerText=Object.entries(g).map(([k,v])=>`[${k}]\n${v.map(x=>`${x.day}일 · ${x.name}`).join('\n')||'- 없음'}`).join('\n\n');
- localStorage.setItem('massCalendar', $('calendar').value); $('seoCalendar').value=$('calendar').value;
+  const src=$('liturgicalClean').value || $('calendarRaw').value || $('seoCalendar').value;
+  const rows=parseCalendar(src);
+  const g={'주일':[],'연중/평일':[],'기념일':[],'축일':[]};
+  rows.forEach(r=>g[cat(r.name)].push(r));
+  $('sSunday').innerText=g['주일'].length;
+  $('sOrdinary').innerText=g['연중/평일'].length;
+  $('sMemorial').innerText=g['기념일'].length;
+  $('sFeast').innerText=g['축일'].length;
+  $('classResult').innerText=Object.entries(g).map(([k,v])=>`[${k}]\n${v.map(x=>`${x.day}일 · ${x.name}`).join('\n')||'- 없음'}`).join('\n\n');
 }
-function makeCalendarPrompt(){
- const y=$('year').value,m=$('month').value,t=$('calendar').value;
- $('classResult').innerText=`아래 ${y}년 ${m}월 가톨릭 전례력을 날짜별 미사 명칭을 확인하여 분류해줘.\n\n분류 규칙:\n1) 이름에 ‘주일’이 있으면 [주일]\n2) ‘기념’이 있으면 [기념일]\n3) ‘축일’ 또는 ‘대축일’이 있으면 [축일]\n4) 나머지 연중/부활/대림/사순 평일은 [연중/평일]\n\n출력은 날짜 오름차순으로 각 분류별 목록을 만들고, 주말분/연중분/기념일분/축일분 4개 작업 묶음으로 다시 정리해줘.\n\n[전례력]\n${t}`;
+
+function makeLiturgicalFunction(){
+  const month=+$('month').value;
+  const rows=parseCalendar($('liturgicalClean').value || $('calendarRaw').value);
+  if(!rows.length){$('liturgicalFunction').innerText='# 먼저 전례력 문구를 입력하고 [전례력 문구 다듬기]를 눌러주세요.';return;}
+  const lines=rows.map(r=>`    ${r.day}: "${r.name}",`).join('\n');
+  $('liturgicalFunction').innerText=`# 날짜에 따른 전례력(liturgical) 텍스트 반환 함수 (${month}월 기준)\n\ndef get_liturgical_text(date):\n\n    liturgical_calendar = {\n${lines}\n    }\n\n    return liturgical_calendar.get(date, "")`;
 }
+
 function daysInMonth(y,m){return new Date(y,m,0).getDate()}
+
+function makeFullPsdCode(){
+  const y=+$('year').value, m=+$('month').value, last=daysInMonth(y,m);
+  const rows=parseCalendar($('liturgicalClean').value || $('calendarRaw').value);
+  if(!rows.length){$('fullPsdCode').innerText='# 먼저 전례력 문구 다듬기와 함수 코드 생성을 완료해 주세요.';return;}
+  const dictLines=rows.map(r=>`        ${r.day}: "${r.name}",`).join('\n');
+  const dateFontPath=$('dateFontPath').value;
+  const liturgicalFontPath=$('liturgicalFontPath').value;
+  const psdPath=$('psdPath').value;
+  const outputDir=$('outputDir').value;
+  const dateFontSize=$('dateFontSize').value;
+  const litFontSize=$('litFontSize').value;
+  const maxWidth=$('maxWidth').value;
+  const dateY=$('dateY').value;
+  const liturgyY=$('liturgyY').value;
+  const prefix=$('thumbPrefix').value || 'thumbnail_';
+  $('fullPsdCode').innerText=`import os\nfrom psd_tools import PSDImage\nfrom PIL import Image, ImageDraw, ImageFont\nfrom datetime import datetime, timedelta\n\n# 글꼴 경로와 크기 정의\ndate_font_path = r"${dateFontPath}"\nliturgical_font_path = r"${liturgicalFontPath}"\ndate_font_size = ${dateFontSize}\nliturgical_font_size = ${litFontSize}\nmax_width = ${maxWidth}  # maximum width for text to fit within the image\n\n# 글꼴 파일이 존재하는지 확인\nif not os.path.exists(date_font_path):\n    print(f"Error: Date font file not found at {date_font_path}")\n    exit(1)\n\nif not os.path.exists(liturgical_font_path):\n    print(f"Error: Liturgical font file not found at {liturgical_font_path}")\n    exit(1)\n\n# 텍스트 위치 좌표 정의\ndate_coords = (108, ${dateY})\nliturgical_coords = (95, ${liturgyY})\n\n# PSD 파일 로드\npsd_path = r"${psdPath}"\nif not os.path.exists(psd_path):\n    print(f"Error: PSD file not found at {psd_path}")\n    exit(1)\n\n# 날짜에 따른 전례력(liturgical) 텍스트 반환 함수 (${m}월 기준)\ndef get_liturgical_text(date):\n\n    liturgical_calendar = {\n${dictLines}\n    }\n\n    return liturgical_calendar.get(date, "")\n\n# 텍스트가 주어진 최대 너비에 맞게 글꼴 크기 조정 함수\ndef adjust_font_size(draw, text, font_path, max_size, max_width):\n    font_size = max_size\n    font = ImageFont.truetype(font_path, font_size)\n    while draw.textbbox((0, 0), text, font=font)[2] > max_width and font_size > 10:\n        font_size -= 1\n        font = ImageFont.truetype(font_path, font_size)\n    return font\n\n# PSD 파일에 새로운 날짜와 전례력 텍스트를 업데이트하는 함수\ndef update_psd(psd, new_date_str, liturgical_text):\n    base_image = psd.composite()\n    draw = ImageDraw.Draw(base_image)\n\n    # 날짜와 전례력 텍스트에 맞게 글꼴 크기 조정\n    date_font = adjust_font_size(draw, new_date_str, date_font_path, date_font_size, max_width)\n    liturgical_font = adjust_font_size(draw, liturgical_text, liturgical_font_path, liturgical_font_size, max_width)\n\n    # 글꼴 크기 계산\n    date_text_bbox = draw.textbbox((0, 0), new_date_str, font=date_font)\n    liturgical_text_bbox = draw.textbbox((0, 0), liturgical_text, font=liturgical_font)\n\n    # 이미지 너비 기준 중앙 정렬 좌표 계산\n    image_width = base_image.width\n    date_x = (image_width - (date_text_bbox[2] - date_text_bbox[0])) // 2\n    liturgical_x = (image_width - (liturgical_text_bbox[2] - liturgical_text_bbox[0])) // 2\n\n    # 텍스트 배경 직사각형 그리기\n    draw.rectangle([date_x - 5, date_coords[1] - 5, date_x + (date_text_bbox[2] - date_text_bbox[0]) + 5, date_coords[1] + (date_text_bbox[3] - date_text_bbox[1]) + 5], fill="black")\n    draw.rectangle([liturgical_x - 5, liturgical_coords[1] - 5, liturgical_x + (liturgical_text_bbox[2] - liturgical_text_bbox[0]) + 5, liturgical_coords[1] + (liturgical_text_bbox[3] - liturgical_text_bbox[1]) + 5], fill="black")\n\n    # 텍스트 추가\n    draw.text((date_x, date_coords[1]), new_date_str, font=date_font, fill=(255, 255, 255))\n    draw.text((liturgical_x, liturgical_coords[1]), liturgical_text, font=liturgical_font, fill=(255, 255, 255))\n\n    return base_image\n\ndef main():\n    try:\n        psd = PSDImage.open(psd_path)\n        print(f"Loaded PSD file: {psd_path}")\n\n        # ${y}년 ${m}월의 각 날짜에 대해 이미지 생성\n        start_date = datetime(${y}, ${m}, 1)\n        end_date = datetime(${y}, ${m}, ${last})\n        current_date = start_date\n\n        output_dir = r"${outputDir}"\n        os.makedirs(output_dir, exist_ok=True)\n        print(f"Output directory created: {output_dir}")\n\n        while current_date <= end_date:\n            new_date_str = current_date.strftime("%Y년 %m월 %d일")\n            liturgical_text = get_liturgical_text(current_date.day)\n            print(f"Processing date: {new_date_str} - {liturgical_text}")\n\n            updated_image = update_psd(psd, new_date_str, liturgical_text)\n\n            # 업데이트된 이미지 저장\n            output_path = os.path.join(output_dir, f"${prefix}{current_date.strftime('%Y%m%d')}.png")\n            updated_image.save(output_path)\n            print(f"Saved image: {output_path}")\n\n            current_date += timedelta(days=1)\n\n        print("Images generated successfully!")\n\n    except Exception as e:\n        print(f"An error occurred: {e}")\n\nif __name__ == "__main__":\n    main()`;
+}
+
 function makePython(){
- const y=+$('year').value,m=+$('month').value,mm=String(m).padStart(2,'0'),last=daysInMonth(y,m), out=`${m}월 (${String(y).slice(-2)}년) 자동화 글저장.docx`;
- $('pythonCode').innerText=`import requests\nfrom bs4 import BeautifulSoup\nfrom docx import Document\nfrom datetime import datetime, timedelta\n\nbase_url = "https://missa.cbck.or.kr/DailyMissa/{}"\n\nstart_date = datetime(${y}, ${m}, 1)\nend_date = datetime(${y}, ${m}, ${last})\ncurrent_date = start_date\ndates = []\n\nwhile current_date <= end_date:\n    dates.append(current_date.strftime('%Y%m%d'))\n    current_date += timedelta(days=1)\n\ndoc = Document()\ndoc.add_heading('${y}년 ${m}월 매일미사 자동 수집', level=1)\n\nheaders = {\n    "User-Agent": "Mozilla/5.0"\n}\n\nfor date in dates:\n    url = base_url.format(date)\n    try:\n        response = requests.get(url, headers=headers, timeout=15)\n        response.raise_for_status()\n        print(f"Successfully fetched: {date}")\n    except requests.RequestException as e:\n        print(f"Failed: {date} / {e}")\n        continue\n\n    soup = BeautifulSoup(response.text, 'html.parser')\n    elements = soup.find_all(\n        ['div', 'p'],\n        class_=['col-12 col-12-xsmall', 'col-12 col-12-xsmall nobottommargin title-block']\n    )\n\n    doc.add_heading(date, level=2)\n    for element in elements:\n        text = element.get_text(" ", strip=True)\n        if not text:\n            continue\n        classes = element.get('class', [])\n        if 'title-block' in classes:\n            doc.add_heading(text, level=3)\n        else:\n            doc.add_paragraph(text)\n\ndoc.save(r"${out}")\nprint("Saved: ${out}")\n`;
+  const y=+$('year').value, m=+$('month').value, last=daysInMonth(y,m), out=`${m}월 (${String(y).slice(-2)}년) 자동화 글저장.docx`;
+  $('pythonCode').innerText=`import requests\nfrom bs4 import BeautifulSoup\nfrom docx import Document\nfrom datetime import datetime, timedelta\n\n# 기본 URL 설정\nbase_url = "https://missa.cbck.or.kr/DailyMissa/{}"\n\n# 날짜 리스트 생성\nstart_date = datetime(${y}, ${m}, 1)\nend_date = datetime(${y}, ${m}, ${last})\ncurrent_date = start_date\ndates = []\n\nwhile current_date <= end_date:\n    dates.append(current_date.strftime('%Y%m%d'))\n    current_date += timedelta(days=1)\n\n# 워드 문서 생성\ndoc = Document()\ndoc.add_heading('Extracted Text', level=1)\n\nheaders = {\n    \"User-Agent\": \"Mozilla/5.0\"\n}\n\n# 각 날짜에 대해 텍스트 추출 및 워드 파일에 저장\nfor date in dates:\n    url = base_url.format(date)\n    response = requests.get(url, headers=headers, timeout=15)\n\n    if response.status_code == 200:\n        print(f\"Successfully fetched the webpage for date: {date}\")\n    else:\n        print(f\"Failed to fetch the webpage for date: {date}, status code: {response.status_code}\")\n        continue\n\n    # HTML 파싱\n    soup = BeautifulSoup(response.text, 'html.parser')\n\n    # 매일미사 사이트 기준 요소 추출\n    elements = soup.find_all(['div', 'p'], class_=['col-12 col-12-xsmall', 'col-12 col-12-xsmall nobottommargin title-block'])\n\n    # 텍스트를 순서대로 워드 문서에 추가\n    for element in elements:\n        text = element.get_text(strip=True)\n        if text:\n            if 'title-block' in element.get('class', []):\n                doc.add_heading(text, level=3)\n            else:\n                doc.add_paragraph(text)\n\n# 워드 문서 저장\ndoc.save(r\"${out}\")\nprint(\"The text has been successfully saved to ${out}\")`;
 }
-async function readDocx(e){const f=e.target.files[0];if(!f)return;const buf=await f.arrayBuffer();try{const r=await mammoth.extractRawText({arrayBuffer:buf});$('rawText').value=r.value}catch(err){alert('DOCX 읽기에 실패했습니다: '+err.message)}}
+
+async function readDocx(e){
+  const f=e.target.files[0]; if(!f) return;
+  const buf=await f.arrayBuffer();
+  try{
+    const r=await mammoth.extractRawText({arrayBuffer:buf});
+    $('rawText').value=r.value;
+  }catch(err){alert('DOCX 읽기에 실패했습니다: '+err.message)}
+}
+
 function cleanMassText(){
- let t=$('rawText').value;
- const removeHeads=['입당송','본기도','예물 기도','예물기도','영성체송','영성체 후 묵상','영성체 후 기도','복음 환호송'];
- const allHeads=['입당송','본기도','제1독서','화답송','복음 환호송','제2독서','복음','예물 기도','예물기도','영성체송','영성체 후 묵상','영성체 후 기도','오늘의 묵상'];
- const lines=t.split(/\n/); let keep=true,out=[]; let currentTitle=''; let sunday=/주일/.test(t.slice(0,1200));
- for(let line of lines){const s=line.trim(); const hit=allHeads.find(h=>s===h||s.startsWith(h)); if(hit){currentTitle=hit; keep=!removeHeads.includes(hit); if(hit==='화답송') keep=sunday; if(keep) out.push('\n'+s); continue;} if(keep && s) out.push(s)}
- $('cleanedText').value=out.join('\n').replace(/\n{3,}/g,'\n\n').trim();
+  let t=$('rawText').value;
+  const removeHeads=['입당송','본기도','예물 기도','예물기도','영성체송','영성체 후 묵상','영성체 후 기도','복음 환호송'];
+  const allHeads=['입당송','본기도','제1독서','화답송','복음 환호송','제2독서','복음','예물 기도','예물기도','영성체송','영성체 후 묵상','영성체 후 기도','오늘의 묵상'];
+  const lines=t.split(/\n/); let keep=true,out=[];
+  const sunday=/주일/.test(t.slice(0,1200));
+  for(let line of lines){
+    const s=line.trim();
+    const hit=allHeads.find(h=>s===h || s.startsWith(h));
+    if(hit){
+      keep=!removeHeads.includes(hit);
+      if(hit==='화답송') keep=sunday;
+      if(keep) out.push('\n'+s);
+      continue;
+    }
+    if(keep && s) out.push(s);
+  }
+  $('cleanedText').value=out.join('\n').replace(/\n{3,}/g,'\n\n').trim();
 }
+
 function makeCleanupPrompt(){
- $('cleanedText').value=`내가 MS Word에서 추출한 매일미사 원문을 아래 룰에 따라 정리해줘.\n\n<룰>\n- 입당송 시편 제거\n- 본기도 제거\n- 주일을 제외한 화답송 제거\n- 복음 환호송 제거\n- 예물 기도 제거\n- 영성체송 제거\n- 영성체 후 묵상 제거\n- 영성체 후 기도 제거\n- 반드시 남길 것: 제1독서, 제2독서(있는 날), 복음, 오늘의 묵상, 주일의 화답송, 기념일/축일/주일 앞부분 초대문\n- 날짜별 묶음과 원래 순서는 유지\n- 문구를 임의로 요약하거나 바꾸지 말 것\n\n[원문]\n${$('rawText').value}`;
+  $('cleanedText').value=`내가 MS Word에서 추출한 매일미사 원문을 아래 룰에 따라 정리해줘.\n\n<룰(rule)>\n입당송시편, 본기도, 주일을 제외한 부분의 화답송시편과 복음 환호송시편, 예물 기도, 영성체송시편, 영성체 후 묵상, 영성체 후 기도를 모두 제거해줘.\n남아야할 것은 제1독서, 제2독서, 복음, 오늘의 묵상 부분과 주일에 해당하는 화답송이고, 기념일이나 각종축일과 주일의 앞부분의 초대문이야.\n\n[원문]\n${$('rawText').value}`;
 }
+
 function splitFourParts(){
- const rows=parseCalendar($('calendar').value||$('seoCalendar').value), grouped={'주말분':[],'연중분':[],'기념일분':[],'축일분':[]};
- rows.forEach(r=>{const c=cat(r.name);if(c==='주일')grouped['주말분'].push(r);else if(c==='기념일')grouped['기념일분'].push(r);else if(c==='축일')grouped['축일분'].push(r);else grouped['연중분'].push(r)});
- $('fourParts').innerText=Object.entries(grouped).map(([k,v])=>`[${k}] ${v.length}일\n${v.map(x=>`${x.day}일 ${x.name}`).join('\n')}`).join('\n\n')+`\n\n[정리된 본문]\n${$('cleanedText').value.slice(0,3000)}${$('cleanedText').value.length>3000?'\n...':''}`;
- window._parts=grouped;
+  const rows=parseCalendar($('liturgicalClean').value || $('calendarRaw').value || $('seoCalendar').value);
+  const grouped={'주말분':[],'연중분':[],'기념일분':[],'축일분':[]};
+  rows.forEach(r=>{const c=cat(r.name); if(c==='주일') grouped['주말분'].push(r); else if(c==='기념일') grouped['기념일분'].push(r); else if(c==='축일') grouped['축일분'].push(r); else grouped['연중분'].push(r)});
+  $('fourParts').innerText=Object.entries(grouped).map(([k,v])=>`[${k}] ${v.length}일\n${v.map(x=>`${x.day}일 ${x.name}`).join('\n') || '- 없음'}`).join('\n\n') + `\n\n[정리된 본문]\n${$('cleanedText').value.slice(0,3000)}${$('cleanedText').value.length>3000?'\n...':''}`;
+  window._parts=grouped;
 }
-function downloadFour(){if(!window._parts)splitFourParts();Object.entries(window._parts||{}).forEach(([k,v])=>downloadText(`${k}.txt`,v.map(x=>`${x.day}일 ${x.name}`).join('\n')))}
-function titleLines(y,m,rows){let out=[];for(const r of rows){const d=`${y}년 ${m}월 ${r.day}일 매일미사 ${r.name}`; const items=/주일|대축일/.test(r.name)?['오늘의 묵상','제1독서','화답송','제2독서','복음','오늘의 묵상']:['오늘의 묵상','제1독서','복음','오늘의 묵상'];out.push(items.map(x=>`${d} ${x}`).join('\n'))}return out.join('\n\n')}
-function makeTitles(){const y=$('seoYear').value,m=$('seoMonth').value,rows=parseCalendar($('seoCalendar').value);$('titleOutput').innerText=titleLines(y,m,rows)}
-function makeKeywords(){const y=$('seoYear').value,m=$('seoMonth').value,rows=parseCalendar($('seoCalendar').value);$('keywordOutput').innerText=rows.map(r=>`A: ${y}년 ${m}월 ${r.day}일 매일미사 ${r.name} 오늘의 묵상\n키워드: ${y}년 ${m}월 ${r.day}일 매일미사, ${m}월 ${r.day}일 매일미사, 매일묵상 ${m}월 ${r.day}일, ${r.name}, 오늘의 묵상, 매일미사, 가톨릭 미사, 신부님강론, 매일미사 ${y}년 ${m}월 ${r.day}일`).join('\n\n')}
-function makeSeoPrompt(){const y=$('seoYear').value,m=$('seoMonth').value,cal=$('seoCalendar').value;$('seoPrompt').innerText=`아래 ${y}년 ${m}월 가톨릭 전례력을 기준으로 날짜별 제목 세트와 A/키워드 세트를 작성해줘.\n\n[제목 규칙]\n- 일반 평일/기념일/축일: 오늘의 묵상, 제1독서, 복음, 오늘의 묵상\n- 주일 및 대축일: 오늘의 묵상, 제1독서, 화답송, 제2독서, 복음, 오늘의 묵상\n- 형식: ${y}년 ${m}월 N일 매일미사 [전례명] [항목]\n\n[키워드 규칙]\nA: ${y}년 ${m}월 N일 매일미사 [전례명] 오늘의 묵상\n키워드: ${y}년 ${m}월 N일 매일미사, ${m}월 N일 매일미사, 매일묵상 ${m}월 N일, [전례명], 오늘의 묵상, 매일미사, 가톨릭 미사, 신부님강론, 매일미사 ${y}년 ${m}월 N일\n\n[전례력]\n${cal}`}
-function makeImagePrompt(){$('imagePrompt').innerText=`가톨릭 매일미사 콘텐츠용 대표 이미지를 만들어줘.\n날짜: ${$('imgDate').value}\n전례명: ${$('imgMass').value}\n핵심 키워드: ${$('imgKey').value}\n분위기: ${$('imgMood').value}\n비율: ${$('imgRatio').value}\n텍스트: ${$('imgText').value}\n\n요구사항: 과도한 장식 없이 경건하고 정갈하게, 자연광과 절제된 색감, 가톨릭 상징은 필요할 때만 은은하게 사용, 인물은 특정 실존인과 닮지 않게, 블로그/티스토리 대표 이미지로 써도 깔끔한 구도.`}
-function makePsdCode(){$('psdCode').innerText=`from psd_tools import PSDImage\nfrom PIL import Image, ImageDraw, ImageFont\n\n# 1) PSD 템플릿 열기\npsd = PSDImage.open('template.psd')\n\n# 2) PSD를 합성 이미지로 렌더링\nbase = psd.composite().convert('RGB')\n\n# 3) 필요 시 Pillow로 날짜/제목 오버레이\ndraw = ImageDraw.Draw(base)\n# font = ImageFont.truetype('YOUR_FONT.ttf', 54)\n# draw.text((120, 120), '${$('imgDate').value}', font=font, fill='white')\n# draw.text((120, 210), '${$('imgMass').value}', font=font, fill='white')\n\n# 4) 저장\nbase.save('output.jpg', quality=95)\nprint('output.jpg 저장 완료')\n\n# 참고: psd-tools는 PSD 구조/레이어 읽기에 좋지만, Photoshop처럼 모든 텍스트 레이어를 완전히 수정하는 용도에는 한계가 있습니다.\n# 복잡한 PSD 텍스트 자동화가 필요하면 Photoshop ExtendScript/UXP 방식과 병행하는 것이 안전합니다.`}
-function copyEl(id){navigator.clipboard.writeText($(id).innerText||$(id).value||'');}
-function downloadText(name,text){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
-const saved=localStorage.getItem('massCalendar');if(saved){$('calendar').value=saved;$('seoCalendar').value=saved}
+
+function downloadFour(){
+  if(!window._parts) splitFourParts();
+  Object.entries(window._parts||{}).forEach(([k,v])=>downloadText(`${k}.txt`,v.map(x=>`${x.day}일 ${x.name}`).join('\n')));
+}
+
+function titleLines(y,m,rows){
+  let out=[];
+  for(const r of rows){
+    const d=`${y}년 ${m}월 ${r.day}일 매일미사 ${r.name}`;
+    const items=/주일|대축일/.test(r.name)?['오늘의 묵상','제1독서','화답송','제2독서','복음','오늘의 묵상']:['오늘의 묵상','제1독서','복음','오늘의 묵상'];
+    out.push(items.map(x=>`${d} ${x}`).join('\n'));
+  }
+  return out.join('\n\n');
+}
+
+function getSeoRows(){
+  return parseCalendar($('seoCalendar').value || $('liturgicalClean').value || $('calendarRaw').value);
+}
+
+function makeTitles(){
+  const y=$('seoYear').value, m=$('seoMonth').value, rows=getSeoRows();
+  $('titleOutput').innerText=titleLines(y,m,rows);
+}
+
+function makeKeywords(){
+  const y=$('seoYear').value, m=$('seoMonth').value, rows=getSeoRows();
+  $('keywordOutput').innerText=rows.map(r=>`A: ${y}년 ${m}월 ${r.day}일 매일미사 ${r.name} 오늘의 묵상\n키워드: ${y}년 ${m}월 ${r.day}일 매일미사, ${m}월 ${r.day}일 매일미사, 매일묵상 ${m}월 ${r.day}일, ${r.name}, 오늘의 묵상, 매일미사, 가톨릭 미사, 신부님강론, 매일미사 ${y}년 ${m}월 ${r.day}일`).join('\n\n');
+}
+
+function makeSeoPrompt(){
+  const y=$('seoYear').value, m=$('seoMonth').value, cal=$('seoCalendar').value || $('liturgicalClean').value;
+  $('seoPrompt').innerText=`아래 ${y}년 ${m}월 가톨릭 전례력을 기준으로 날짜별 제목 세트와 A/키워드 세트를 작성해줘.\n\n[제목 규칙]\n- 일반 평일/기념일/축일: 오늘의 묵상, 제1독서, 복음, 오늘의 묵상\n- 주일 및 대축일: 오늘의 묵상, 제1독서, 화답송, 제2독서, 복음, 오늘의 묵상\n- 형식: ${y}년 ${m}월 N일 매일미사 [전례명] [항목]\n\n[키워드 규칙]\nA: ${y}년 ${m}월 N일 매일미사 [전례명] 오늘의 묵상\n키워드: ${y}년 ${m}월 N일 매일미사, ${m}월 N일 매일미사, 매일묵상 ${m}월 N일, [전례명], 오늘의 묵상, 매일미사, 가톨릭 미사, 신부님강론, 매일미사 ${y}년 ${m}월 N일\n\n[전례력]\n${cal}`;
+}
+
+function makeImagePrompt(){
+  $('imagePrompt').innerText=`가톨릭 매일미사 콘텐츠용 대표 이미지를 만들어줘.\n날짜: ${$('imgDate').value}\n전례명: ${$('imgMass').value}\n핵심 키워드: ${$('imgKey').value}\n분위기: ${$('imgMood').value}\n비율: ${$('imgRatio').value}\n텍스트: ${$('imgText').value}\n\n요구사항: 과도한 장식 없이 경건하고 정갈하게, 자연광과 절제된 색감, 가톨릭 상징은 필요할 때만 은은하게 사용, 블로그/티스토리 대표 이미지로 사용하기 좋은 구도.`;
+}
+
+function makePsdCode(){
+  $('psdCode').innerText=`from psd_tools import PSDImage\nfrom PIL import Image, ImageDraw, ImageFont\n\n# 1) PSD 템플릿 열기\npsd = PSDImage.open('template.psd')\n\n# 2) PSD를 합성 이미지로 렌더링\nbase = psd.composite().convert('RGB')\n\n# 3) 필요 시 Pillow로 날짜/제목 오버레이\ndraw = ImageDraw.Draw(base)\n# font = ImageFont.truetype('YOUR_FONT.ttf', 54)\n# draw.text((120, 120), '${$('imgDate').value}', font=font, fill='white')\n# draw.text((120, 210), '${$('imgMass').value}', font=font, fill='white')\n\n# 4) 저장\nbase.save('output.jpg', quality=95)\nprint('output.jpg 저장 완료')`;
+}
+
+function copyEl(id){ navigator.clipboard.writeText($(id).innerText || $(id).value || ''); }
+function downloadText(name,text){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'})); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); }
+
+const savedRaw=localStorage.getItem('massCalendarRaw');
+const savedClean=localStorage.getItem('massCalendarClean');
+if(savedRaw) $('calendarRaw').value=savedRaw;
+if(savedClean){ $('liturgicalClean').value=savedClean; $('seoCalendar').value=savedClean; }
 </script>
 </body>
 </html>
