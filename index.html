@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>말씀과함께 · 가톨릭 콘텐츠 자동화 작업실</title>
   <script src="https://unpkg.com/mammoth@1.8.0/mammoth.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
     :root{
       --bg:#f7f4ee; --panel:#fffdf9; --line:#e5ddd0; --text:#2f2a25; --muted:#7f756a;
@@ -49,8 +50,10 @@
     .pillbox{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.pill{padding:6px 9px;border-radius:999px;font-size:11px;border:1px solid var(--line);background:#fff}
     .drop{border:1.5px dashed #cbbca9;border-radius:16px;padding:18px;text-align:center;background:#fbf8f3}
     .mini{font-size:11px;color:var(--muted)}
+
+    .statusgrid{display:grid;gap:8px;margin-top:12px}.statusrow{display:grid;grid-template-columns:120px 150px 1fr auto;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;font-size:12px}.statusrow .date{font-weight:800}.tag{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:700}.tag.ok{background:#e8f2e7;color:#496449}.tag.warn{background:#f7edda;color:#7b6330}.tag.bad{background:#f6e2e2;color:#875050}.codehelp{padding:12px 14px;border-radius:12px;background:#f8f5ef;border:1px solid var(--line);font-size:12px;line-height:1.65}.previewbox{min-height:420px}.tinyarea{min-height:72px}.twoCol{display:grid;grid-template-columns:1fr 1fr;gap:10px}details{margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#faf8f4}summary{cursor:pointer;font-size:12px;font-weight:800}.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.legend span{font-size:11px;color:var(--muted)}
     footer{padding:26px 0 8px;color:var(--muted);font-size:11px;text-align:center}
-    @media (max-width:980px){.grid,.grid3,.stepflow,.stats,.tabs,.row,.row3{grid-template-columns:1fr}.wrap{padding:16px}header{align-items:flex-start;flex-direction:column}}
+    @media (max-width:980px){.grid,.grid3,.stepflow,.stats,.tabs,.row,.row3,.twoCol,.statusrow{grid-template-columns:1fr}.wrap{padding:16px}header{align-items:flex-start;flex-direction:column}}
   </style>
 </head>
 <body>
@@ -116,7 +119,7 @@
 
     <div class="grid" style="margin-top:18px">
       <div class="card">
-        <h2>3. 예시 bbbb 형식으로 전체 PSD 자동화 코드 만들기</h2>
+        <h2>3. 썸네일 PSD이미지 만들기</h2>
         <div class="hint">아래 값들을 필요에 맞게 바꾼 뒤, <b>전체 코드 생성</b>을 누르면 예시 bbbb 형식에 맞춰 <b>전례력 함수가 자동 대입된 전체 Python 코드</b>를 만듭니다.</div>
         <div class="row">
           <div><label>날짜 글꼴 경로</label><input id="dateFontPath" value="C:/Users/전례력글꼴/Cafe24Ohsquare.ttf"></div>
@@ -139,9 +142,13 @@
         <div class="btns">
           <button class="primary" onclick="makeFullPsdCode()">전체 코드 생성</button>
           <button class="soft" onclick="copyEl('fullPsdCode')">복사</button>
-          <button class="green" onclick="downloadText('make_liturgical_images.py',$('fullPsdCode').innerText)">.py 다운로드</button>
+          <button class="green" onclick="downloadText('generate_images.py',$('fullPsdCode').innerText)">.py 다운로드</button>
         </div>
         <pre id="fullPsdCode"># [함수 코드 생성] 후 전체 코드를 만들어 주세요.</pre>
+        <label>VS Code 터미널에 이렇게 넣고 썸네일이미지 만들기</label>
+        <div class="hint">사전에 포토샵 파일(PSD)이 만들어졌는지 먼저 확인한 뒤 아래 명령어를 VS Code 터미널에 복붙해서 실행하세요.</div>
+        <div class="btns"><button class="soft" onclick="copyCommand('python generate_images.py')">명령어 복사</button></div>
+        <pre id="generateCommand">python generate_images.py</pre>
       </div>
 
       <div class="card">
@@ -153,39 +160,91 @@
           <button class="green" onclick="downloadText('extract_missa.py',$('pythonCode').innerText)">.py 다운로드</button>
         </div>
         <pre id="pythonCode"># 위의 연/월을 기준으로 extract_missa.py가 생성됩니다.</pre>
+        <label>VS Code 터미널에 이렇게 넣고 매일미사 전문 수집하기</label>
+        <div class="hint">아래 명령어를 VS Code 터미널에 그대로 복붙해서 실행하세요.</div>
+        <div class="btns"><button class="soft" onclick="copyCommand('python extract_missa.py')">명령어 복사</button></div>
+        <pre id="extractCommand">python extract_missa.py</pre>
         <div class="pillbox">
           <span class="pill">requests</span><span class="pill">beautifulsoup4</span><span class="pill">python-docx</span><span class="pill">psd-tools</span><span class="pill">Pillow</span>
         </div>
       </div>
     </div>
 
+    <div class="card" style="margin-top:18px">
+      <h2>5. MS Word 원문 불러오기 · 티스토리 HTML 자동 생성</h2>
+      <div class="hint">이 단계부터는 앞에서 만든 월 전례력과 Word 원문을 합쳐, <b>연중 / 기념·축일 / 주일·대축일</b> 3가지 최종 규칙을 자동 적용합니다. 원문은 요약하거나 줄이지 않고, 독서·복음 절 번호/출처/응답/묵상 필자 스타일을 HTML로 바꿉니다.</div>
+      <div class="stepflow" style="margin-top:16px">
+        <div class="step">① Word 원문</div><div class="step">② 제목 목록</div><div class="step">③ 이미지 태그</div><div class="step">④ 날짜별 분석</div><div class="step">⑤ HTML/TXT ZIP</div>
+      </div>
+    </div>
+
     <div class="grid" style="margin-top:18px">
       <div class="card">
-        <h2>5. MS Word 원문 불러오기 · 정리</h2>
+        <h2>5-1. 한 달치 Word 원문 불러오기</h2>
         <div class="drop">
           <div><b>.docx 파일 선택</b></div>
-          <div class="mini">브라우저에서 텍스트를 읽어옵니다. 오래된 .doc 파일은 .docx로 저장 후 사용하세요.</div>
+          <div class="mini">앞의 extract_missa.py로 만든 Word 파일을 선택하세요. 새 버전은 날짜마다 <code>===DATE:YYYYMMDD===</code> 표시를 넣어 자동 분리가 더 정확합니다.</div>
           <input id="docxFile" type="file" accept=".docx" onchange="readDocx(event)">
         </div>
-        <label>원문 전문</label>
-        <textarea id="rawText" placeholder="Word에서 읽은 텍스트가 여기에 표시됩니다."></textarea>
-        <div class="btns">
-          <button class="primary" onclick="cleanMassText()">불필요 부분 자동 정리</button>
-          <button class="soft" onclick="makeCleanupPrompt()">GPT 정리 프롬프트 만들기</button>
-          <button class="green" onclick="downloadText('정리된_매일미사.txt',$('cleanedText').value)">정리본 다운로드</button>
-        </div>
+        <label>Word 원문 전문</label>
+        <textarea id="rawText" style="min-height:300px" placeholder="Word에서 읽은 한 달치 원문이 여기에 표시됩니다. 직접 붙여넣어도 됩니다."></textarea>
+        <div class="btns"><button class="soft" onclick="copyEl('rawText')">원문 복사</button><button class="green" onclick="downloadText('매일미사_원문.txt',$('rawText').value)">원문 TXT</button></div>
       </div>
 
       <div class="card">
-        <h2>6. 정리 결과 · 4개 파트 준비</h2>
-        <div class="hint">기본 룰: 입당송·본기도·예물기도·영성체송·영성체 후 묵상/기도·평일 화답송·복음환호송 등을 제거하고, 제1독서/제2독서/복음/오늘의 묵상 및 주일 화답송을 남기는 방향으로 정리합니다.</div>
-        <label>정리된 텍스트</label>
-        <textarea id="cleanedText" placeholder="정리 결과"></textarea>
-        <div class="btns">
-          <button class="primary" onclick="splitFourParts()">주말/연중/기념일/축일로 분리</button>
-          <button class="soft" onclick="downloadFour()">4개 파일 다운로드</button>
-        </div>
-        <pre id="fourParts">전례력 분류 결과와 정리된 본문을 바탕으로 4개 파트를 만들 수 있습니다. 이후 주실 ‘주말분/연중분/기념일분/축일분’ 각각의 최종 코드 규칙을 이 자리에 연결할 수 있게 설계해두었습니다.</pre>
+        <h2>5-2. 발행용 대제목 · 소제목</h2>
+        <div class="hint">CBCK 원문의 전례명과 실제 발행 제목이 다를 수 있으므로, <b>최종 HTML 제목은 이 목록을 우선</b>합니다. 앞 단계 전례력으로 자동 작성한 뒤 필요하면 직접 고치세요.</div>
+        <div class="btns"><button class="primary" onclick="fillPublishTitlesFromCalendar()">앞 단계 전례력으로 자동 채우기</button><button class="soft" onclick="copyEl('publishTitles')">복사</button></div>
+        <label>대제목 · 소제목 목록</label>
+        <textarea id="publishTitles" style="min-height:300px" placeholder="예)\n2026년 9월 20일 매일미사 ... 대축일 오늘의 묵상\n2026년 9월 20일 매일미사 ... 대축일 제1독서\n2026년 9월 20일 매일미사 ... 대축일 화답송\n2026년 9월 20일 매일미사 ... 대축일 제2독서\n2026년 9월 20일 매일미사 ... 대축일 복음\n2026년 9월 20일 매일미사 ... 대축일 오늘의 묵상"></textarea>
+        <div class="legend"><span>연중 → 제1독서·복음·묵상</span><span>기념/축일 → 초대문 + 제1독서·복음·묵상</span><span>주일/대축일 → 초대문 + 제1독서·화답송·제2독서·복음·묵상</span></div>
+      </div>
+    </div>
+
+    <div class="grid" style="margin-top:18px">
+      <div class="card">
+        <h2>5-3. 티스토리 이미지 태그 연결</h2>
+        <div class="hint">이미지는 티스토리가 실제 업로드하면서 만든 <code>[##_Image|kage@..._##]</code> 토큰이어야 화면에 나옵니다. 정상 발행된 글의 HTML을 붙이면 역할별 이미지 태그를 자동 추출합니다. 기존 <b>kage URL·originWidth·originHeight·filename 등은 그대로 보존</b>하고 alt만 현재 제목에 맞춥니다.</div>
+        <label>정상 발행된 티스토리 HTML 샘플</label>
+        <textarea id="imageSampleHtml" style="min-height:210px" placeholder="대표 이미지, 제1독서, 화답송, 제2독서, 복음, 오늘의 묵상 이미지가 들어 있는 정상 발행 HTML을 붙여넣으세요. 여러 날짜 코드를 한꺼번에 붙여도 됩니다."></textarea>
+        <div class="btns"><button class="primary" onclick="extractImageTemplates()">이미지 태그 자동 추출</button></div>
+        <pre id="imageTemplateStatus">아직 이미지 태그를 추출하지 않았습니다.</pre>
+        <details>
+          <summary>이미지 태그를 직접 넣거나 확인하기</summary>
+          <label>대표 썸네일</label><textarea id="imgTokenThumb" class="tinyarea"></textarea>
+          <label>제1독서</label><textarea id="imgTokenFirst" class="tinyarea"></textarea>
+          <label>화답송</label><textarea id="imgTokenPsalm" class="tinyarea"></textarea>
+          <label>제2독서</label><textarea id="imgTokenSecond" class="tinyarea"></textarea>
+          <label>복음</label><textarea id="imgTokenGospel" class="tinyarea"></textarea>
+          <label>오늘의 묵상</label><textarea id="imgTokenReflection" class="tinyarea"></textarea>
+        </details>
+      </div>
+
+      <div class="card">
+        <h2>5-4. 공통 HTML 설정</h2>
+        <label>광고 태그</label>
+        <textarea id="adCode" class="tinyarea"><figure class="ad-wp" contenteditable="false" data-ke-type="revenue" data-ad-vendor="adsense" data-ad-id-pc="293538" data-ad-id-mobile="293541"></figure></textarea>
+        <div class="row"><div><label>섹션 사이 빈 줄 개수</label><input id="gapCount" type="number" min="0" max="6" value="2"></div><div><label>TXT 파일명</label><select id="fileNameMode"><option value="date">2026년 9월 1일.txt</option><option value="full">날짜 + 전례명.txt</option></select></div></div>
+        <div class="codehelp"><b>자동 적용하는 3종 규칙</b><br>① 연중: 대표이미지 → 광고 → 제1독서 → 복음 → 묵상<br>② 기념/축일: 대표이미지 → 초대문 → 광고 → 제1독서 → 복음 → 묵상<br>③ 주일/대축일: 대표이미지 → 초대문 → 광고 → 제1독서 → 화답송 → 제2독서 → 복음 → 묵상<br><br>모든 독서·복음 원문은 삭제/요약하지 않고, 절 번호는 분홍색, 말씀 출처는 회색, 응답은 검정 굵게, 묵상 필자는 초록색 굵게 변환합니다.</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <h2>5-5. 날짜별 원문 분석</h2>
+      <div class="btns"><button class="primary" onclick="analyzeMassSource()">① 날짜별 원문 분석</button><button class="purple" onclick="generateAllPosts()">② 전체 HTML 생성</button><button class="green" onclick="downloadPostsZip()">③ 날짜별 TXT ZIP 다운로드</button></div>
+      <div id="analysisResult" class="statusgrid"><div class="hint">Word 원문과 제목 목록을 준비한 뒤 [날짜별 원문 분석]을 누르세요.</div></div>
+    </div>
+
+    <div class="grid" style="margin-top:18px">
+      <div class="card">
+        <h2>5-6. 날짜별 결과 확인</h2>
+        <label>확인할 날짜</label><select id="postSelect" onchange="showSelectedPost()"><option value="">분석 후 날짜를 선택하세요.</option></select>
+        <div id="selectedPostMeta" class="notice" style="margin-top:12px">선택한 날짜의 유형·누락 항목·이미지 연결 상태가 표시됩니다.</div>
+        <div class="btns"><button class="soft" onclick="copyEl('generatedHtml')">HTML 복사</button><button class="green" onclick="downloadSelectedPost()">선택일 TXT 다운로드</button></div>
+      </div>
+      <div class="card">
+        <h2>티스토리 HTML 미리보기 코드</h2>
+        <pre id="generatedHtml" class="previewbox">아직 생성된 HTML이 없습니다.</pre>
       </div>
     </div>
 
@@ -194,7 +253,7 @@
       <div class="step">② 전례력 문구 다듬기</div>
       <div class="step">③ 함수 코드 생성</div>
       <div class="step">④ 전체 PSD 코드 생성</div>
-      <div class="step">⑤ Word/발행 작업</div>
+      <div class="step">⑤ Word → HTML → ZIP</div>
     </div>
   </section>
 
@@ -340,8 +399,14 @@ function makeFullPsdCode(){
 
 function makePython(){
   const y=+$('year').value, m=+$('month').value, last=daysInMonth(y,m), out=`${m}월 (${String(y).slice(-2)}년) 자동화 글저장.docx`;
-  $('pythonCode').innerText=`import requests\nfrom bs4 import BeautifulSoup\nfrom docx import Document\nfrom datetime import datetime, timedelta\n\n# 기본 URL 설정\nbase_url = "https://missa.cbck.or.kr/DailyMissa/{}"\n\n# 날짜 리스트 생성\nstart_date = datetime(${y}, ${m}, 1)\nend_date = datetime(${y}, ${m}, ${last})\ncurrent_date = start_date\ndates = []\n\nwhile current_date <= end_date:\n    dates.append(current_date.strftime('%Y%m%d'))\n    current_date += timedelta(days=1)\n\n# 워드 문서 생성\ndoc = Document()\ndoc.add_heading('Extracted Text', level=1)\n\nheaders = {\n    \"User-Agent\": \"Mozilla/5.0\"\n}\n\n# 각 날짜에 대해 텍스트 추출 및 워드 파일에 저장\nfor date in dates:\n    url = base_url.format(date)\n    response = requests.get(url, headers=headers, timeout=15)\n\n    if response.status_code == 200:\n        print(f\"Successfully fetched the webpage for date: {date}\")\n    else:\n        print(f\"Failed to fetch the webpage for date: {date}, status code: {response.status_code}\")\n        continue\n\n    # HTML 파싱\n    soup = BeautifulSoup(response.text, 'html.parser')\n\n    # 매일미사 사이트 기준 요소 추출\n    elements = soup.find_all(['div', 'p'], class_=['col-12 col-12-xsmall', 'col-12 col-12-xsmall nobottommargin title-block'])\n\n    # 텍스트를 순서대로 워드 문서에 추가\n    for element in elements:\n        text = element.get_text(strip=True)\n        if text:\n            if 'title-block' in element.get('class', []):\n                doc.add_heading(text, level=3)\n            else:\n                doc.add_paragraph(text)\n\n# 워드 문서 저장\ndoc.save(r\"${out}\")\nprint(\"The text has been successfully saved to ${out}\")`;
+  $('pythonCode').innerText=`import requests\nfrom bs4 import BeautifulSoup\nfrom docx import Document\nfrom datetime import datetime, timedelta\n\n# 기본 URL 설정\nbase_url = "https://missa.cbck.or.kr/DailyMissa/{}"\n\n# 날짜 리스트 생성\nstart_date = datetime(${y}, ${m}, 1)\nend_date = datetime(${y}, ${m}, ${last})\ncurrent_date = start_date\ndates = []\n\nwhile current_date <= end_date:\n    dates.append(current_date.strftime('%Y%m%d'))\n    current_date += timedelta(days=1)\n\n# 워드 문서 생성\ndoc = Document()\ndoc.add_heading('Extracted Text', level=1)\n\nheaders = {\n    "User-Agent": "Mozilla/5.0"\n}\n\nfor date in dates:\n    url = base_url.format(date)\n    response = requests.get(url, headers=headers, timeout=15)\n\n    if response.status_code == 200:\n        print(f"Successfully fetched the webpage for date: {date}")\n    else:\n        print(f"Failed to fetch the webpage for date: {date}, status code: {response.status_code}")\n        continue\n\n    # 사이트가 바뀌더라도 Word에서 날짜별 분리가 정확하도록 날짜 마커를 함께 저장\n    doc.add_paragraph(f"===DATE:{date}===")\n\n    soup = BeautifulSoup(response.text, 'html.parser')\n    elements = soup.find_all(['div', 'p'], class_=['col-12 col-12-xsmall', 'col-12 col-12-xsmall nobottommargin title-block'])\n\n    for element in elements:\n        text = element.get_text(" ", strip=True)\n        if text:\n            if 'title-block' in element.get('class', []):\n                doc.add_heading(text, level=3)\n            else:\n                doc.add_paragraph(text)\n\n    doc.add_paragraph("===ENDDATE===")\n\ndoc.save(r"${out}")\nprint("The text has been successfully saved to ${out}")`;
 }
+
+const MASS_ROLE_LABELS={thumb:'대표 이미지',first:'제1독서',psalm:'화답송',second:'제2독서',gospel:'복음',reflection:'오늘의 묵상'};
+let massDays=[];
+let massPosts=[];
+let imageCommon={};
+let imageByDate={};
 
 async function readDocx(e){
   const f=e.target.files[0]; if(!f) return;
@@ -352,41 +417,395 @@ async function readDocx(e){
   }catch(err){alert('DOCX 읽기에 실패했습니다: '+err.message)}
 }
 
-function cleanMassText(){
-  let t=$('rawText').value;
-  const removeHeads=['입당송','본기도','예물 기도','예물기도','영성체송','영성체 후 묵상','영성체 후 기도','복음 환호송'];
-  const allHeads=['입당송','본기도','제1독서','화답송','복음 환호송','제2독서','복음','예물 기도','예물기도','영성체송','영성체 후 묵상','영성체 후 기도','오늘의 묵상'];
-  const lines=t.split(/\n/); let keep=true,out=[];
-  const sunday=/주일/.test(t.slice(0,1200));
-  for(let line of lines){
-    const s=line.trim();
-    const hit=allHeads.find(h=>s===h || s.startsWith(h));
-    if(hit){
-      keep=!removeHeads.includes(hit);
-      if(hit==='화답송') keep=sunday;
-      if(keep) out.push('\n'+s);
-      continue;
-    }
-    if(keep && s) out.push(s);
-  }
-  $('cleanedText').value=out.join('\n').replace(/\n{3,}/g,'\n\n').trim();
-}
+function pad2(n){return String(n).padStart(2,'0')}
+function makeDateKey(y,m,d){return `${y}-${pad2(m)}-${pad2(d)}`}
+function escapeHtml(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function stripTags(s){return String(s||'').replace(/<[^>]+>/g,'').replace(/&nbsp;/g,' ').trim()}
+function normalizePastedHtml(s){return String(s||'').replace(/\\</g,'<').replace(/\\>/g,'>').replace(/\\_/g,'_')}
 
-function makeCleanupPrompt(){
-  $('cleanedText').value=`내가 MS Word에서 추출한 매일미사 원문을 아래 룰에 따라 정리해줘.\n\n<룰(rule)>\n입당송시편, 본기도, 주일을 제외한 부분의 화답송시편과 복음 환호송시편, 예물 기도, 영성체송시편, 영성체 후 묵상, 영성체 후 기도를 모두 제거해줘.\n남아야할 것은 제1독서, 제2독서, 복음, 오늘의 묵상 부분과 주일에 해당하는 화답송이고, 기념일이나 각종축일과 주일의 앞부분의 초대문이야.\n\n[원문]\n${$('rawText').value}`;
-}
-
-function splitFourParts(){
+function fillPublishTitlesFromCalendar(){
+  const y=+$('year').value, m=+$('month').value;
   const rows=parseCalendar($('liturgicalClean').value || $('calendarRaw').value || $('seoCalendar').value);
-  const grouped={'주말분':[],'연중분':[],'기념일분':[],'축일분':[]};
-  rows.forEach(r=>{const c=cat(r.name); if(c==='주일') grouped['주말분'].push(r); else if(c==='기념일') grouped['기념일분'].push(r); else if(c==='축일') grouped['축일분'].push(r); else grouped['연중분'].push(r)});
-  $('fourParts').innerText=Object.entries(grouped).map(([k,v])=>`[${k}] ${v.length}일\n${v.map(x=>`${x.day}일 ${x.name}`).join('\n') || '- 없음'}`).join('\n\n') + `\n\n[정리된 본문]\n${$('cleanedText').value.slice(0,3000)}${$('cleanedText').value.length>3000?'\n...':''}`;
-  window._parts=grouped;
+  if(!rows.length){alert('먼저 1번에서 전례력을 입력하고 [전례력 문구 다듬기]를 눌러주세요.');return;}
+  $('publishTitles').value=titleLines(y,m,rows);
 }
 
-function downloadFour(){
-  if(!window._parts) splitFourParts();
-  Object.entries(window._parts||{}).forEach(([k,v])=>downloadText(`${k}.txt`,v.map(x=>`${x.day}일 ${x.name}`).join('\n')));
+function parsePublishTitles(text){
+  const map={};
+  for(const raw of String(text||'').split(/\n+/)){
+    const line=raw.trim(); if(!line) continue;
+    const m=line.match(/^(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일\s+매일미사\s+(.+?)\s+(오늘의\s*묵상|제1독서|화답송|제2독서|복음)\s*$/);
+    if(!m) continue;
+    const key=makeDateKey(+m[1],+m[2],+m[3]);
+    const roleText=m[5].replace(/\s+/g,'');
+    const role=roleText==='제1독서'?'first':roleText==='화답송'?'psalm':roleText==='제2독서'?'second':roleText==='복음'?'gospel':'reflection';
+    if(!map[key]) map[key]={key,year:+m[1],month:+m[2],day:+m[3],base:`${m[1]}년 ${+m[2]}월 ${+m[3]}일 매일미사 ${m[4].trim()}`,roles:new Set(),labels:{}};
+    map[key].roles.add(role);
+    map[key].labels[role]=line;
+  }
+  return map;
+}
+
+function splitMonthlySource(text){
+  const src=String(text||'').replace(/\r/g,'');
+  const blocks=[];
+  const marker=/===DATE:(\d{8})===([\s\S]*?)(?====ENDDATE===|===DATE:|$)/g;
+  let mm;
+  while((mm=marker.exec(src))){
+    const d=mm[1];
+    blocks.push({key:`${d.slice(0,4)}-${d.slice(4,6)}-${d.slice(6,8)}`,text:mm[2].trim()});
+  }
+  if(blocks.length) return blocks;
+
+  const lines=src.split('\n');
+  let current=null;
+  const byKey={};
+  for(const raw of lines){
+    const line=raw.trim();
+    let m=line.match(/^(\d{4})(\d{2})(\d{2})$/);
+    if(m){current=`${m[1]}-${m[2]}-${m[3]}`; if(!byKey[current]) byKey[current]=[]; continue;}
+    m=line.match(/(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일/);
+    if(m){
+      const key=makeDateKey(+m[1],+m[2],+m[3]);
+      if(!current || current!==key) current=key;
+      if(!byKey[current]) byKey[current]=[];
+    }
+    if(current && line) byKey[current].push(line);
+  }
+  return Object.keys(byKey).sort().map(key=>({key,text:byKey[key].join('\n')}));
+}
+
+function headingRole(line, hasReading){
+  const s=line.replace(/\s+/g,' ').trim();
+  if(/복음\s*환호송/.test(s)) return 'ignore';
+  if(/입당송|본기도|예물\s*기도|영성체송|영성체\s*후\s*묵상|영성체\s*후\s*기도/.test(s)) return 'ignore';
+  if(/오늘\s*전례|초대문\s*:/.test(s)) return 'intro';
+  if(/제1독서\s*$/.test(s)) return 'first';
+  if(/화답송\s*$/.test(s)) return 'psalm';
+  if(/제2독서\s*$/.test(s)) return 'second';
+  if(/(?:^|\s)복음\s*$/.test(s) && !/복음\s*환호송/.test(s)) return 'gospel';
+  if(/오늘의\s*묵상\s*$/.test(s)) return hasReading?'reflection':'pageTitle';
+  return null;
+}
+
+function segmentMassBlock(text){
+  const out={intro:[],first:[],psalm:[],second:[],gospel:[],reflection:[]};
+  let current='pre', hasReading=false;
+  const lines=String(text||'').replace(/\r/g,'').split('\n').map(x=>x.trim()).filter(Boolean);
+  for(const line of lines){
+    const role=headingRole(line,hasReading);
+    if(role){
+      if(role==='first'){hasReading=true;current='first';continue}
+      if(role==='pageTitle'){current='pre';continue}
+      if(role==='intro'){current='intro';continue}
+      if(role==='ignore'){current='ignore';continue}
+      current=role; continue;
+    }
+    if(/^===/.test(line) || /^\d{8}$/.test(line)) continue;
+    if(/\d{4}년\s*\d{1,2}월\s*\d{1,2}일\s+매일미사/.test(line) && /(오늘의\s*묵상|제1독서|화답송|제2독서|복음)\s*$/.test(line)) continue;
+    if(current==='intro' || (current==='pre' && !hasReading)){
+      if(!/^(매일미사|전례력|색상|오늘의 미사)/.test(line)) out.intro.push(line);
+    }else if(out[current]) out[current].push(line);
+  }
+  return out;
+}
+
+function calendarNameForKey(key){
+  const [y,m,d]=key.split('-').map(Number);
+  const rows=parseCalendar($('liturgicalClean').value || $('calendarRaw').value || $('seoCalendar').value);
+  const r=rows.find(x=>x.day===d);
+  return r?`${y}년 ${m}월 ${d}일 매일미사 ${r.name}`:`${y}년 ${m}월 ${d}일 매일미사`;
+}
+
+function determinePostType(base,titleRoles,seg){
+  if(/주일|대축일/.test(base) || titleRoles.has('psalm')) return '주일/대축일';
+  if(/기념|축일|한가위|재의\s*수요일|성주간|성금요일/.test(base)) return '기념/축일';
+  return '연중';
+}
+
+function expectedRolesFor(day){
+  if(day.type==='주일/대축일') return ['first','psalm','second','gospel','reflection'];
+  if(day.type==='기념/축일'){
+    const arr=['first'];
+    if(day.titleRoles.has('second') || day.seg.second.length) arr.push('second');
+    arr.push('gospel','reflection');
+    return arr;
+  }
+  return ['first','gospel','reflection'];
+}
+
+function analyzeMassSource(){
+  const titleMap=parsePublishTitles($('publishTitles').value);
+  const blocks=splitMonthlySource($('rawText').value);
+  if(!blocks.length){alert('날짜별 원문을 찾지 못했습니다. 새 extract_missa.py로 다시 만들거나, Word 원문 안에 날짜 제목이 있는지 확인해주세요.');return;}
+  massDays=blocks.map(b=>{
+    const seg=segmentMassBlock(b.text);
+    const meta=titleMap[b.key]||null;
+    const base=meta?.base || calendarNameForKey(b.key);
+    const titleRoles=meta?.roles || new Set();
+    const labels=meta?.labels || {};
+    const type=determinePostType(base,titleRoles,seg);
+    const day={key:b.key,base,titleRoles,labels,type,seg,raw:b.text};
+    day.expected=expectedRolesFor(day);
+    day.missing=day.expected.filter(r=>!seg[r]?.length);
+    day.introMissing=type!=='연중' && !seg.intro.length;
+    return day;
+  }).sort((a,b)=>a.key.localeCompare(b.key));
+
+  const sel=$('postSelect');
+  sel.innerHTML='<option value="">날짜를 선택하세요.</option>'+massDays.map(d=>`<option value="${d.key}">${d.key} · ${escapeHtml(d.type)}</option>`).join('');
+  $('analysisResult').innerHTML=massDays.map(d=>{
+    const missing=d.missing.map(r=>MASS_ROLE_LABELS[r]).join(', ');
+    const intro=d.introMissing?' · 초대문 없음':'';
+    const ok=!d.missing.length&&!d.introMissing;
+    return `<div class="statusrow"><div class="date">${d.key}</div><div><span class="tag ${d.type==='연중'?'ok':d.type==='기념/축일'?'warn':'bad'}">${escapeHtml(d.type)}</span></div><div>${ok?'필수 원문 인식 완료':`확인 필요: ${escapeHtml(missing||'')}${escapeHtml(intro)}`}</div><div><span class="tag ${ok?'ok':'warn'}">${ok?'OK':'CHECK'}</span></div></div>`;
+  }).join('');
+  massPosts=[];
+  if(massDays[0]){sel.value=massDays[0].key;showSelectedPost()}
+}
+
+function roleFromHeading(title,level){
+  const t=stripTags(title);
+  if(level==='2') return 'thumb';
+  if(/제1독서/.test(t)) return 'first';
+  if(/화답송/.test(t)) return 'psalm';
+  if(/제2독서/.test(t)) return 'second';
+  if(/복음/.test(t) && !/복음\s*환호송/.test(t)) return 'gospel';
+  if(/오늘의\s*묵상/.test(t)) return 'reflection';
+  return null;
+}
+
+function extractImageTemplates(){
+  const src=normalizePastedHtml($('imageSampleHtml').value);
+  imageCommon={}; imageByDate={};
+  const re=/<h([23])[^>]*>([\s\S]*?)<\/h\1>\s*<p[^>]*>\s*(\[##_Image\|[\s\S]*?_##\])\s*<\/p>/gi;
+  let m,count=0;
+  while((m=re.exec(src))){
+    const title=stripTags(m[2]);
+    const role=roleFromHeading(m[2],m[1]); if(!role) continue;
+    const dm=title.match(/(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일/);
+    const token=m[3].trim();
+    if(dm){
+      const key=makeDateKey(+dm[1],+dm[2],+dm[3]);
+      imageByDate[key]=imageByDate[key]||{};
+      imageByDate[key][role]=token;
+    }
+    if(!imageCommon[role]) imageCommon[role]=token;
+    count++;
+  }
+  const idMap={thumb:'imgTokenThumb',first:'imgTokenFirst',psalm:'imgTokenPsalm',second:'imgTokenSecond',gospel:'imgTokenGospel',reflection:'imgTokenReflection'};
+  Object.entries(idMap).forEach(([r,id])=>{if(imageCommon[r]) $(id).value=imageCommon[r]});
+  $('imageTemplateStatus').innerText=`추출 ${count}개\n`+Object.keys(idMap).map(r=>`${MASS_ROLE_LABELS[r]}: ${imageCommon[r]?'연결됨':'없음'}`).join('\n')+`\n날짜별 고유 태그: ${Object.keys(imageByDate).length}일`;
+}
+
+function manualImageToken(role){
+  const map={thumb:'imgTokenThumb',first:'imgTokenFirst',psalm:'imgTokenPsalm',second:'imgTokenSecond',gospel:'imgTokenGospel',reflection:'imgTokenReflection'};
+  return $(map[role])?.value.trim()||'';
+}
+
+function imageTokenFor(day,role,title){
+  let token=imageByDate[day.key]?.[role] || manualImageToken(role) || imageCommon[role] || '';
+  if(!token) return '';
+  const alt=String(title).replace(/\\/g,'\\\\').replace(/"/g,'\\"');
+  if(/"alt"\s*:/.test(token)) token=token.replace(/"alt"\s*:\s*"[^"]*"/,`"alt":"${alt}"`);
+  else if(/"filename"\s*:/.test(token)) token=token.replace(/"filename"\s*:/,`"alt":"${alt}","filename":`);
+  else token=token.replace(/}\s*_##\]$/,`,"alt":"${alt}"}_##]`);
+  return token;
+}
+
+function imageParagraph(day,role,title){
+  const token=imageTokenFor(day,role,title);
+  return token?`<p>${token}</p>`:'';
+}
+
+function adBlock(){return $('adCode').value.trim()}
+function gapHtml(){const n=Math.max(0,Math.min(6,+$('gapCount').value||0));return Array.from({length:n},()=>'<p data-ke-size="size16">&nbsp;</p>').join('\n')}
+function sectionBreak(){return [adBlock(),gapHtml()].filter(Boolean).join('\n')}
+
+function cleanAngleHighlight(s){
+  const t=String(s||'').trim();
+  if(/^<[^<>]+>$/.test(t)) return t.slice(1,-1).trim();
+  return t;
+}
+
+function splitSourceLine(line){
+  const s=String(line||'').trim();
+  const marker=s.includes('거룩한 복음입니다.')?'거룩한 복음입니다.':'말씀입니다.';
+  const idx=s.indexOf(marker);
+  if(idx<0) return {source:s,ref:''};
+  const end=idx+marker.length;
+  return {source:s.slice(0,end).trim(),ref:s.slice(end).trim()};
+}
+
+function verseParagraphs(line){
+  let s=String(line||'').trim(); if(!s) return [];
+  const responseIdx=s.indexOf('주님의 말씀입니다.');
+  if(responseIdx>=0) s=s.slice(0,responseIdx).trim();
+  if(!s) return [];
+  const re=/(\d{1,2},\d{1,3}[ㄱ-ㅎ]?|\d{1,3}[ㄱ-ㅎ]?)/g;
+  const matches=[...s.matchAll(re)];
+  if(!matches.length) return [`<p class="han" style="text-align: justify;" data-ke-size="size16">${escapeHtml(s)}</p>`];
+  const out=[];
+  for(let i=0;i<matches.length;i++){
+    const m=matches[i];
+    const prevEnd=i===0?0:matches[i-1].index+matches[i-1][0].length;
+    if(i===0){
+      const prefix=s.slice(0,m.index);
+      const end=matches[i+1]?.index ?? s.length;
+      const rest=s.slice(m.index+m[0].length,end);
+      out.push(`<p class="han" style="text-align: justify;" data-ke-size="size16">${escapeHtml(prefix)}<b><span style="color: #fb85a3;" class="gmart">${escapeHtml(m[0])}</span></b>${escapeHtml(rest)}</p>`);
+    }else{
+      const end=matches[i+1]?.index ?? s.length;
+      const rest=s.slice(m.index+m[0].length,end);
+      out.push(`<p class="han" style="text-align: justify;" data-ke-size="size16"><b><span style="color: #fb85a3;" class="gmart">${escapeHtml(m[0])}</span></b>${escapeHtml(rest)}</p>`);
+    }
+  }
+  return out;
+}
+
+function renderReading(lines,kind){
+  const arr=(lines||[]).map(x=>x.trim()).filter(Boolean); if(!arr.length) return '';
+  let hiIdx=arr.findIndex(x=>/^<[^<>]+>$/.test(x));
+  let srcIdx=arr.findIndex(x=>/^[▥✠]/.test(x));
+  let html=[];
+  if(hiIdx>=0){html.push(`<p style="text-align: justify;" data-ke-size="size16"><span style="color: #fb85a3;" class="gmart"><b>${escapeHtml(cleanAngleHighlight(arr[hiIdx]))}</b></span></p>`)}
+  if(srcIdx>=0){
+    const sr=splitSourceLine(arr[srcIdx]);
+    html.push(`<p class="bon" style="text-align: justify;" data-ke-size="size16"><span style="color: #666666;" class="bon"><b>${escapeHtml(sr.source)}${sr.ref?`<span style="font-family: 'Noto Sans Demilight', 'Noto Sans KR';"> ${escapeHtml(sr.ref)}</span>`:''}</b></span></p>`);
+  }
+  const start=srcIdx>=0?srcIdx+1:Math.max(0,hiIdx+1);
+  const body=arr.slice(start).filter((_,i)=>start+i!==hiIdx);
+  for(const raw of body){
+    if(raw.startsWith('주님의 말씀입니다.') || raw.startsWith('◎ 하느님') || raw.startsWith('◎ 그리스도님')) continue;
+    html.push(...verseParagraphs(raw));
+  }
+  const thanks=kind==='gospel'?'◎ 그리스도님, 찬미합니다.':'◎ 하느님, 감사합니다.';
+  html.push(`<p class="chung" style="text-align: justify; color: #000000;" data-ke-size="size16"><b>주님의 말씀입니다. </b><b>${thanks}</b></p>`);
+  return html.join('\n');
+}
+
+function renderPsalm(lines){
+  const arr=(lines||[]).map(x=>x.trim()).filter(Boolean); if(!arr.length) return '';
+  const joined=arr.join(' ');
+  const firstSymbol=Math.min(...['◎','○'].map(ch=>{const i=joined.indexOf(ch);return i<0?1e9:i}));
+  const source=(firstSymbol===1e9?joined:joined.slice(0,firstSymbol)).trim();
+  let rest=(firstSymbol===1e9?'':joined.slice(firstSymbol)).trim();
+  let html=[];
+  if(source) html.push(`<p data-ke-size="size16"><span style="color: #333333;" class="gmart"><b>${escapeHtml(source)}</b></span></p>`);
+  if(rest.startsWith('◎')){
+    const idx=rest.indexOf('○');
+    const resp=(idx<0?rest:rest.slice(0,idx)).trim();
+    html.push(`<p style="text-align: justify;" data-ke-size="size16"><span style="color: #fb85a3;" class="chung"><b>${escapeHtml(resp)}</b></span></p>`);
+    rest=idx<0?'':rest.slice(idx);
+  }
+  const verses=rest.split(/(?=○)/).map(x=>x.trim()).filter(Boolean);
+  for(let v of verses){
+    let trail=false;
+    if(/◎\s*$/.test(v)){trail=true;v=v.replace(/◎\s*$/,'').trim()}
+    html.push(`<p class="han" style="text-align: justify;" data-ke-size="size16">${escapeHtml(v)}${trail?' <span style="color: #fb85a3;" class="chung"><b>◎</b></span>':''}</p>`);
+  }
+  return html.join('\n');
+}
+
+function renderIntro(lines){
+  return (lines||[]).map(x=>x.trim()).filter(Boolean).map(x=>`<p class="han" style="text-align: justify;" data-ke-size="size16"><span style="color: #666666;" class="han"><b>${escapeHtml(x)}</b></span></p>`).join('\n');
+}
+
+function renderReflection(lines){
+  return (lines||[]).map(x=>x.trim()).filter(Boolean).map(raw=>{
+    const m=raw.match(/(\([^()]{1,80}신부(?:님)?\))\s*$/);
+    if(!m) return `<p class="bon" style="text-align: justify;" data-ke-size="size16">${escapeHtml(raw)}</p>`;
+    const body=raw.slice(0,m.index);
+    return `<p class="bon" style="text-align: justify;" data-ke-size="size16">${escapeHtml(body)}<span style="color: #3fd9b4;" class="gmart"><b>${escapeHtml(m[1])}</b></span></p>`;
+  }).join('\n');
+}
+
+function titleFor(day,role){
+  if(day.labels?.[role]) return day.labels[role];
+  return `${day.base} ${MASS_ROLE_LABELS[role]}`;
+}
+
+function renderSection(day,role){
+  const title=titleFor(day,role);
+  let content='';
+  if(role==='psalm') content=renderPsalm(day.seg.psalm);
+  else if(role==='reflection') content=renderReflection(day.seg.reflection);
+  else content=renderReading(day.seg[role],role);
+  if(!content) return '';
+  return [`<h3 data-ke-size="size23"><b>${escapeHtml(title)}</b></h3>`,imageParagraph(day,role,title),content,sectionBreak()].filter(Boolean).join('\n');
+}
+
+function generatePost(day){
+  const topTitle=day.labels?.reflection || `${day.base} 오늘의 묵상`;
+  let parts=[`<h2 style="text-align: center;" data-ke-size="size26"><b>${escapeHtml(topTitle)}</b></h2>`];
+  const topImg=imageParagraph(day,'thumb',topTitle); if(topImg) parts.push(topImg);
+  if(day.type!=='연중' && day.seg.intro.length) parts.push(renderIntro(day.seg.intro));
+  parts.push(sectionBreak());
+  const roles=expectedRolesFor(day);
+  for(const role of roles){
+    const sec=renderSection(day,role); if(sec) parts.push(sec);
+  }
+  return parts.filter(Boolean).join('\n');
+}
+
+function missingImageRoles(day){
+  const roles=['thumb',...expectedRolesFor(day)];
+  return roles.filter(r=>!imageTokenFor(day,r,r==='thumb'?(day.labels?.reflection||`${day.base} 오늘의 묵상`):titleFor(day,r)));
+}
+
+function generateAllPosts(){
+  if(!massDays.length) analyzeMassSource();
+  if(!massDays.length) return;
+  massPosts=massDays.map(day=>({day,html:generatePost(day),missingImages:missingImageRoles(day)}));
+  $('analysisResult').innerHTML=massPosts.map(p=>{
+    const d=p.day;
+    const contentIssue=d.missing.length || d.introMissing;
+    const imgIssue=p.missingImages.length;
+    const msgs=[];
+    if(d.missing.length) msgs.push('원문: '+d.missing.map(r=>MASS_ROLE_LABELS[r]).join(', '));
+    if(d.introMissing) msgs.push('초대문');
+    if(imgIssue) msgs.push('이미지: '+p.missingImages.map(r=>MASS_ROLE_LABELS[r]).join(', '));
+    const ok=!contentIssue&&!imgIssue;
+    return `<div class="statusrow"><div class="date">${d.key}</div><div><span class="tag ${d.type==='연중'?'ok':d.type==='기념/축일'?'warn':'bad'}">${escapeHtml(d.type)}</span></div><div>${ok?'HTML 생성 준비 완료':`확인 필요 · ${escapeHtml(msgs.join(' / '))}`}</div><div><span class="tag ${ok?'ok':'warn'}">${ok?'READY':'CHECK'}</span></div></div>`;
+  }).join('');
+  const sel=$('postSelect'); if(sel.value) showSelectedPost(); else if(massPosts[0]){sel.value=massPosts[0].day.key;showSelectedPost()}
+}
+
+function showSelectedPost(){
+  const key=$('postSelect').value; if(!key) return;
+  const p=massPosts.find(x=>x.day.key===key);
+  const day=massDays.find(x=>x.key===key); if(!day) return;
+  const html=p?.html || generatePost(day);
+  $('generatedHtml').innerText=html;
+  const missing=day.missing.map(r=>MASS_ROLE_LABELS[r]);
+  const imgs=(p?.missingImages || missingImageRoles(day)).map(r=>MASS_ROLE_LABELS[r]);
+  $('selectedPostMeta').innerHTML=`<b>${escapeHtml(day.type)}</b> · 원문 ${missing.length?`누락: ${escapeHtml(missing.join(', '))}`:'필수 섹션 인식 완료'} · 초대문 ${day.type==='연중'?'해당 없음':day.seg.intro.length?'인식됨':'확인 필요'} · 이미지 ${imgs.length?`미연결: ${escapeHtml(imgs.join(', '))}`:'연결 완료'}`;
+}
+
+function safeFileName(s){return s.replace(/[\\/:*?"<>|]/g,'_').replace(/\s+/g,' ').trim()}
+function postFileName(day){
+  const [y,m,d]=day.key.split('-').map(Number);
+  if($('fileNameMode').value==='full') return safeFileName(`${y}년 ${m}월 ${d}일 ${day.base.replace(/^.*?매일미사\s*/,'')}.txt`);
+  return `${y}년 ${m}월 ${d}일.txt`;
+}
+
+function downloadSelectedPost(){
+  const key=$('postSelect').value; if(!key){alert('날짜를 선택해주세요.');return}
+  const day=massDays.find(x=>x.key===key); if(!day) return;
+  const p=massPosts.find(x=>x.day.key===key);
+  downloadText(postFileName(day),p?.html||generatePost(day));
+}
+
+async function downloadPostsZip(){
+  if(!massPosts.length) generateAllPosts();
+  if(!massPosts.length) return;
+  if(typeof JSZip==='undefined'){alert('ZIP 라이브러리를 불러오지 못했습니다. 인터넷 연결 후 다시 열어주세요.');return}
+  const issues=massPosts.filter(p=>p.day.missing.length || p.day.introMissing || p.missingImages.length);
+  if(issues.length && !confirm(`${issues.length}일에 원문/초대문/이미지 확인 항목이 있습니다. 그래도 ZIP을 만들까요?`)) return;
+  const zip=new JSZip();
+  massPosts.forEach(p=>zip.file(postFileName(p.day),p.html));
+  const blob=await zip.generateAsync({type:'blob'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`말씀과함께_${$('year').value}년_${$('month').value}월_HTML_TXT.zip`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
 
 function titleLines(y,m,rows){
@@ -427,6 +846,7 @@ function makePsdCode(){
 }
 
 function copyEl(id){ navigator.clipboard.writeText($(id).innerText || $(id).value || ''); }
+function copyCommand(cmd){ navigator.clipboard.writeText(cmd); }
 function downloadText(name,text){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'})); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); }
 
 const savedRaw=localStorage.getItem('massCalendarRaw');
